@@ -5,8 +5,5 @@
         void Compare();
 
         bool CompareSavedQueryResults(string file1, string file2);
-
-     
-
     }
 }

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PxWebComparer.Business;
+using PxWebComparer.Forms;
 using PxWebComparer.Services;
 
 namespace PxApiComparer

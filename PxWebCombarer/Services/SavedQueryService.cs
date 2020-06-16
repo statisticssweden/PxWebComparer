@@ -44,7 +44,7 @@ namespace PxWebComparer.Services
             file.Directory.Create();
             
             File.WriteAllText(
-                Path.Combine(path, $"{fileName}.{savedQueryFormat}"),
+                Path.Combine(path, $"{fileName}_{savedQueryFormat}.txt"),
                 content,
                 Encoding.UTF8);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PxWebComparer.Model;
@@ -51,6 +52,7 @@ namespace PxWebComparer.Repo
         public void SaveToFile(CompareResultModel compareResultModel, string path)
         {
             
+
             var json = File.ReadAllText(path);
 //            var compareResults = JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
 
@@ -59,7 +61,25 @@ namespace PxWebComparer.Repo
             //compareResults.Add(compareResultModel);
             File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
         }
-        
+
+        public void SaveToFile(List<CompareResultModel> compareResultModelList, string path)
+        {
+
+            //var json = File.ReadAllText(path);
+            //var compareResults = JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
+            //compareResults.Add(compareResultModelList);
+            File.WriteAllText(path, JsonConvert.SerializeObject(compareResultModelList));
+
+        }
+
+
+        public List<CompareResultModel> ReadFromFile(string path)
+        {
+            var json = File.ReadAllText(path);
+           
+            return JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
+        }
+
         //private static bool IsValidJson(string strInput)
         //{
         //    strInput = strInput.Trim();
