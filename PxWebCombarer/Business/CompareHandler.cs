@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 using PxWebComparer.Model;
 using PxWebComparer.Model.Enums;
@@ -55,6 +56,7 @@ namespace PxWebComparer.Business
                         _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
 
+                        Thread.Sleep(2000);
 
                         var result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
                             $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");

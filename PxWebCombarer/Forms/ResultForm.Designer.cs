@@ -33,10 +33,11 @@
             // 
             // listViewResult
             // 
+            this.listViewResult.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.listViewResult.HideSelection = false;
-            this.listViewResult.Location = new System.Drawing.Point(39, 111);
+            this.listViewResult.Location = new System.Drawing.Point(0, 121);
             this.listViewResult.Name = "listViewResult";
-            this.listViewResult.Size = new System.Drawing.Size(559, 366);
+            this.listViewResult.Size = new System.Drawing.Size(1103, 410);
             this.listViewResult.TabIndex = 0;
             this.listViewResult.UseCompatibleStateImageBehavior = false;
             // 
@@ -49,7 +50,6 @@
             this.Name = "ResultForm";
             this.Text = "ResultForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Enter += new System.EventHandler(this.ResultForm_Enter);
             this.ResumeLayout(false);
 
         }
