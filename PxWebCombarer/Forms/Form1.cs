@@ -29,11 +29,13 @@ namespace PxWebComparer.Forms
             listBoxResult.DataSource = result;
         }
 
+        
+
         //private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         //{
         //    if ()
         //    {
-                
+
         //    }
         //}
     }

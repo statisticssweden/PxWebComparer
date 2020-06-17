@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
 using System.Xml;
 using PxWebComparer.Model;
 using PxWebComparer.Model.Enums;
@@ -14,26 +12,30 @@ namespace PxWebComparer.Business
 {
     public class CompareHandler : ICompareHandler
     {
+
+        private readonly AppSettingsHandler _appSettingsHandler = new AppSettingsHandler();
+        private readonly SavedQueryService _savedQueryService = new SavedQueryService();
+        private readonly SavedQueryFileFormatRepo _repo = new SavedQueryFileFormatRepo();
+
+
+      
         public void Compare()
         {
-            var helper = new AppSettingsHandler();
-            var service = new SavedQueryService();
-            var repo = new SavedQueryFileFormatRepo();
-
+            
             // get url for api site 1
-            var serverAddress1 = helper.ReadSetting("WebApiAddress1");
+            var serverAddress1 = _appSettingsHandler.ReadSetting("WebApiAddress1");
             // get url for api site 2
-            var serverAddress2 = helper.ReadSetting("WebApiAddress2");
+            var serverAddress2 = _appSettingsHandler.ReadSetting("WebApiAddress2");
 
-            var queryTextListPath = helper.ReadSetting("queryTextListPath");
+            var queryTextListPath = _appSettingsHandler.ReadSetting("queryTextListPath");
 
-            var resultFolder1 = helper.ReadSetting("ResultFolder1");
-            var resultFolder2 = helper.ReadSetting("ResultFolder2");
-            var compareResultFile = helper.ReadSetting("CompareResultFile");
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1");
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2");
+            var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
             var fileRepo = new FileCompareRepo();
             var compareResultModelList = new List<CompareResultModel>();
 
-            var queryList = repo.GetSavedQueryFileFormat(queryTextListPath);
+            var queryList = _repo.GetSavedQueryFileFormat(queryTextListPath);
 
             try
             {
@@ -42,22 +44,18 @@ namespace PxWebComparer.Business
                     var compareResultModel = new CompareResultModel();
 
                     compareResultModel.SavedQuery = new UniqueId(query);
-                    //compareResultModel.SavedQuery = query;
-
+                   
                     var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>();
 
                     foreach (var outputFormat in outputFormats)
                     {
-                        //SaveToFile(service, serverAddress1, query, resultFolder2);
-
-                        service.SaveToFile(service.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
+                        _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder1}\\{query}\\");
-
-                        Thread.Sleep(3000);
-
-                        //var queryResult = service.GetSavedQuery(serverAddress1 + query);
-                        service.SaveToFile(service.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
+                        
+                        _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
+
+
                         var result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
                             $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
 
@@ -77,16 +75,7 @@ namespace PxWebComparer.Business
             }
         }
 
-        //public void SaveToFile(SavedQueryService service, string serverAddress, string query, string resultFolder)
-        //{
-
-        //    string queryFormat = "html";
-
-        //    var queryResult = service.GetSavedQuery(serverAddress + query);
-
-        //    service.SaveToFile(queryResult, query, queryFormat, $"{resultFolder}\\{query}\\");
-        //}
-
+        
         public bool CompareSavedQueryResults(string filePath1, string filePath2)
         {
             int file1byte;
@@ -138,6 +127,13 @@ namespace PxWebComparer.Business
             return ((file1byte - file2byte) == 0);
 
 
+        }
+
+        public List<CompareResultModel> GetResults()
+        {
+            var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
+            var fileRepo = new FileCompareRepo();
+            return fileRepo.ReadFromFile(compareResultFile);
         }
 
         public void SaveToFile(SavedQueryService service, string serverAddress, string query, string resultFolder)
