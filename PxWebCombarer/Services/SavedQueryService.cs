@@ -9,9 +9,7 @@ namespace PxWebComparer.Services
     {
         public string GetSavedQuery(string url)
         {
-            //url = "http://pxwebdemo.scb.se/sq/2b33e238-8e7e-44ee-bbdf-21a007a4069a.csv";
             string resultString = string.Empty;
-            //.csv
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

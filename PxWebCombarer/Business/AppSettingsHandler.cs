@@ -6,11 +6,6 @@ namespace PxWebComparer.Business
     public class AppSettingsHandler : IAppSettingsHandler
     {
 
-        public void ReadAllSettings()
-        {
-            throw new NotImplementedException();
-        }
-
         public string ReadSetting(string key)
         {
            
@@ -24,11 +19,6 @@ namespace PxWebComparer.Business
             {
                 throw e;
             }
-        }
-
-        public void AddUpdateAppSettings(string key, string value)
-        {
-            throw new NotImplementedException();
         }
     }
 }

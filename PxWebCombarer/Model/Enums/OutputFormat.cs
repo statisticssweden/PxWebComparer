@@ -17,7 +17,7 @@ namespace PxWebComparer.Model.Enums
         ,csv_space
         ,csv_spacehead
         ,csv_semicolon
-        ,csv_semicololhead
+        ,csv_semicolonhead
         ,json_stat
         ,html5_table
         ,relational_table

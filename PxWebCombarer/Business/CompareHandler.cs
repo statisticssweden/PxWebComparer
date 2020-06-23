@@ -18,8 +18,6 @@ namespace PxWebComparer.Business
         private readonly SavedQueryService _savedQueryService = new SavedQueryService();
         private readonly SavedQueryFileFormatRepo _repo = new SavedQueryFileFormatRepo();
 
-
-      
         public void Compare()
         {
             
@@ -38,25 +36,28 @@ namespace PxWebComparer.Business
 
             var queryList = _repo.GetSavedQueryFileFormat(queryTextListPath);
 
+            fileRepo.DeleteAllFilesInFolder(resultFolder1);
+            fileRepo.DeleteAllFilesInFolder(resultFolder2);
+
             try
             {
                 foreach (var query in queryList)
                 {
                     var compareResultModel = new CompareResultModel();
 
-                    compareResultModel.SavedQuery = new UniqueId(query);
+                    compareResultModel.SavedQuery = query;
                    
                     var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>();
-
+                    
                     foreach (var outputFormat in outputFormats)
                     {
                         _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder1}\\{query}\\");
                         
-                        _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
+                            _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
 
-                        Thread.Sleep(2000);
+                        Thread.Sleep(1000);
 
                         var result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
                             $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
@@ -66,7 +67,8 @@ namespace PxWebComparer.Business
 
                     compareResultModelList.Add(compareResultModel);
                 }
-
+                    
+                fileRepo.DeleteFile(compareResultFile);
                 fileRepo.SaveToFile(compareResultModelList, compareResultFile);
                 var resultFile = fileRepo.ReadFromFile(compareResultFile);
             }
@@ -76,7 +78,6 @@ namespace PxWebComparer.Business
                 throw;
             }
         }
-
         
         public bool CompareSavedQueryResults(string filePath1, string filePath2)
         {
@@ -137,10 +138,6 @@ namespace PxWebComparer.Business
             var fileRepo = new FileCompareRepo();
             return fileRepo.ReadFromFile(compareResultFile);
         }
-
-        public void SaveToFile(SavedQueryService service, string serverAddress, string query, string resultFolder)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

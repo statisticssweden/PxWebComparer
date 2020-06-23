@@ -79,7 +79,7 @@ namespace PxWebComparer.Forms
                 lvi.SubItems.Add(result.csv_space.ToString());
                 lvi.SubItems.Add(result.csv_spacehead.ToString());
                 lvi.SubItems.Add(result.csv_semicolon.ToString());
-                lvi.SubItems.Add(result.csv_semicololhead.ToString());
+                lvi.SubItems.Add(result.csv_semicolonhead.ToString());
                 lvi.SubItems.Add(result.json_stat.ToString());
                 lvi.SubItems.Add(result.html5_table.ToString());
                 lvi.SubItems.Add(result.relational_table.ToString());

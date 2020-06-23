@@ -11,9 +11,9 @@ namespace PxWebComparer.Model
 {
     public class CompareResultModel
     {
-        public UniqueId SavedQuery { get; set; }
-
-        //public string SavedQuery { get; set; }
+        //todo: gör om till sträng
+        //public UniqueId SavedQuery { get; set; }
+        public string SavedQuery { get; set; }
         public bool px { get; set; }
         public bool xlsx { get; set; }
         public bool xlsx_doublecolumn { get; set; }
@@ -25,7 +25,7 @@ namespace PxWebComparer.Model
         public bool csv_space { get; set; }
         public bool csv_spacehead { get; set; }
         public bool csv_semicolon { get; set; }
-        public bool csv_semicololhead { get; set; }
+        public bool csv_semicolonhead { get; set; }
         public bool json_stat { get; set; }
         public bool relational_table { get; set; }
         public bool html5_table { get; set; }
@@ -68,8 +68,8 @@ namespace PxWebComparer.Model
                 case OutputFormat.csv_semicolon:
                     csv_semicolon = result;
                     break;
-                case OutputFormat.csv_semicololhead:
-                    csv_semicololhead = result;
+                case OutputFormat.csv_semicolonhead:
+                    csv_semicolonhead = result;
                     break;
                 case OutputFormat.json:
                     json = result;
@@ -91,7 +91,7 @@ namespace PxWebComparer.Model
             return string.Format(
                 "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}",
                 SavedQuery, px, xlsx, xlsx_doublecolumn, csv, csv_tab, csv_tabhead, csv_comma, csv_commahead,
-                csv_space, csv_spacehead, csv_semicolon, csv_semicololhead, json_stat, relational_table, html5_table,
+                csv_space, csv_spacehead, csv_semicolon, csv_semicolonhead, json_stat, relational_table, html5_table,
                 json);
         }
     }

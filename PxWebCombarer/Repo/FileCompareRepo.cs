@@ -16,19 +16,24 @@ namespace PxWebComparer.Repo
             throw new System.NotImplementedException();
         }
 
-        public void SaveContentToFile(string content, OutputFormat outputFormat)
+        public void DeleteAllFilesInFolder(string path)
         {
-            throw new System.NotImplementedException();
+            System.IO.DirectoryInfo di = new DirectoryInfo(path);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
         }
         
-        public void DeleteFolder(string path)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void DeleteFile(string fileName)
         {
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
+            File.Delete(fileName);
         }
 
         public void SaveToFile(CompareResultModel compareResultModel, string path)
@@ -55,35 +60,5 @@ namespace PxWebComparer.Repo
            
             return JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
         }
-
-        //private static bool IsValidJson(string strInput)
-        //{
-        //    strInput = strInput.Trim();
-        //    if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-        //        (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
-        //    {
-        //        try
-        //        {
-        //            var obj = JToken.Parse(strInput);
-        //            return true;
-        //        }
-        //        catch (JsonReaderException jex)
-        //        {
-        //            //Exception in parsing json
-        //            Console.WriteLine(jex.Message);
-        //            return false;
-        //        }
-        //        catch (Exception ex) //some other exception
-        //        {
-        //            Console.WriteLine(ex.ToString());
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
     }
 }
