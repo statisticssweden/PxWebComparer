@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PxWebComparer.Services;
 using Moq;
+using PxWebComparer.Services;
 
 namespace PxWebComparerTest
 {

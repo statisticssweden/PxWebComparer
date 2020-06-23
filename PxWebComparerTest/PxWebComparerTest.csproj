@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PxWebCombarer\PxWebComparer.csproj" />
+    <ProjectReference Include="..\PxWebComparer\PxWebComparer.csproj" />
   </ItemGroup>
 
 </Project>

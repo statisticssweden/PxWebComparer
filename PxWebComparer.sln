@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PxWebComparerTest", "PxWebComparerTest\PxWebComparerTest.csproj", "{1E72F207-8681-4A68-A7F9-B9C21AB8B5DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PxWebComparer", "PxWebCombarer\PxWebComparer.csproj", "{1FB2B061-5A88-409C-A9BF-DCCD2BE0B23E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PxWebComparer", "PxWebComparer\PxWebComparer.csproj", "{05E34B43-B424-464E-AC1A-CA6FC514543E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{1E72F207-8681-4A68-A7F9-B9C21AB8B5DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E72F207-8681-4A68-A7F9-B9C21AB8B5DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E72F207-8681-4A68-A7F9-B9C21AB8B5DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FB2B061-5A88-409C-A9BF-DCCD2BE0B23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FB2B061-5A88-409C-A9BF-DCCD2BE0B23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FB2B061-5A88-409C-A9BF-DCCD2BE0B23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FB2B061-5A88-409C-A9BF-DCCD2BE0B23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05E34B43-B424-464E-AC1A-CA6FC514543E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05E34B43-B424-464E-AC1A-CA6FC514543E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05E34B43-B424-464E-AC1A-CA6FC514543E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05E34B43-B424-464E-AC1A-CA6FC514543E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
