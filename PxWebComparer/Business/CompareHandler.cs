@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml;
 using PxWebComparer.Model;
 using PxWebComparer.Model.Enums;
 using PxWebComparer.Repo;
 using PxWebComparer.Services;
+using System.Reflection;
+
 
 namespace PxWebComparer.Business
 {
@@ -17,6 +21,7 @@ namespace PxWebComparer.Business
         private readonly AppSettingsHandler _appSettingsHandler = new AppSettingsHandler();
         private readonly SavedQueryService _savedQueryService = new SavedQueryService();
         private readonly SavedQueryFileFormatRepo _repo = new SavedQueryFileFormatRepo();
+        private readonly ExcelComparer _excelComparer = new ExcelComparer();
 
         public void Compare()
         {
@@ -33,6 +38,7 @@ namespace PxWebComparer.Business
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
             var fileRepo = new FileCompareRepo();
             var compareResultModelList = new List<CompareResultModel>();
+            
 
             var queryList = _repo.GetSavedQueryFileFormat(queryTextListPath);
 
@@ -51,17 +57,40 @@ namespace PxWebComparer.Business
                     
                     foreach (var outputFormat in outputFormats)
                     {
-                        _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
+                        bool result = false;
+                        if (outputFormat == OutputFormat.xlsx || outputFormat == OutputFormat.xlsx_doublecolumn)
+                        {
+
+                            _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}" ,
+                                "xlsx", $"{resultFolder1}\\{query}\\");
+
+                            _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}",
+                                "xlsx", $"{resultFolder2}\\{query}\\");
+
+                            Thread.Sleep(1000);
+
+                            var resultList1 = _excelComparer.ReadExcelFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.xlsx");
+
+                            var resultList2 = _excelComparer.ReadExcelFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.xlsx");
+                            
+                            result = CompareArrayLists(resultList1, resultList2);
+
+                        }
+                        else
+                        {
+                            _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder1}\\{query}\\");
-                        
+
                             _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
                             outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
 
-                        Thread.Sleep(1000);
-
-                        var result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
+                            Thread.Sleep(1000);
+                        
+                        result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
                             $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
 
+
+                        }
                         compareResultModel.UpdateModel(outputFormat, result);
                     }
 
@@ -85,6 +114,7 @@ namespace PxWebComparer.Business
             int file2byte;
             FileStream fs1;
             FileStream fs2;
+
 
             // Determine if the same file was referenced two times.
             if (filePath1 == filePath2)
@@ -132,12 +162,33 @@ namespace PxWebComparer.Business
 
         }
 
+        public bool CompareArrayLists(ArrayList arrayList1, ArrayList arrayList2)
+        {
+            if (arrayList1.Count != arrayList2.Count)
+                return false;
+
+
+            var maxElements = arrayList1.Count;
+
+            for (int i = 0; i < maxElements; i++)
+            {
+                if (arrayList1[i].ToString() != arrayList2[i].ToString())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+
         public List<CompareResultModel> GetResults()
         {
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
             var fileRepo = new FileCompareRepo();
             return fileRepo.ReadFromFile(compareResultFile);
         }
-     
+
     }
+
 }
