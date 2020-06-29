@@ -8,7 +8,7 @@ using DocumentFormat.OpenXml;
 
 namespace PxWebComparer.Business
 {
-    public class ExcelComparer
+    public class ExcelComparer : IExcelComparer
     {
         public ArrayList ReadExcelFile(string fileName)
         {
@@ -29,9 +29,9 @@ namespace PxWebComparer.Business
                     foreach (Cell c in r.Elements<Cell>())
                     {
                        
-                        if (c.DataType != null && c.DataType == CellValues.SharedString)
+                        if (c.DataType != null && c.DataType == CellValues.SharedString && c.InnerText != string.Empty)
                         {
-                            var stringId = Convert.ToInt32(c.InnerText);
+                            var stringId = Convert.ToInt32(Regex.Unescape(c.InnerText));
                             data.Add(Regex.Unescape(workbookPart.SharedStringTablePart.SharedStringTable.Elements<SharedStringItem>()
                                 .ElementAt(stringId).InnerText));
                         }
