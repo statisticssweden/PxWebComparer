@@ -22,6 +22,7 @@ namespace PxApiComparer
             var handler = new CompareHandler();
             try
             {
+                handler.CompareSavedQuery();
                 handler.Compare();
                 Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();
