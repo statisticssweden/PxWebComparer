@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using PxWebComparer.Business;
 

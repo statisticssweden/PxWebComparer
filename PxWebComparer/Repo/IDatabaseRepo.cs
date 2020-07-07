@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PxWebComparer.Repo
+﻿namespace PxWebComparer.Repo
 {
     public interface IDatabaseRepo
     {

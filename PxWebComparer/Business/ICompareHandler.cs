@@ -6,9 +6,9 @@ namespace PxWebComparer.Business
     public interface ICompareHandler
     {
         void Compare();
-
+        void CompareSavedQueryMetaDabase();
+        void CompareSavedQueryMetaPxsq();
         bool CompareSavedQueryResults(string file1, string file2);
-
         List<CompareResultModel> GetResults();
     }
 }

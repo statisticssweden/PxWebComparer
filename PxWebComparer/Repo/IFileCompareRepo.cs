@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PxWebComparer.Model;
-using PxWebComparer.Model.Enums;
 
 namespace PxWebComparer.Repo
 {

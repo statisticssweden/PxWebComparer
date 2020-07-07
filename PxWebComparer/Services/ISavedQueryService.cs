@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Net.Http;
-
-namespace PxWebComparer.Services
+﻿namespace PxWebComparer.Services
 {
      public interface ISavedQueryService
      {

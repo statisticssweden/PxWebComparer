@@ -4,7 +4,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections;
 using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml;
 
 namespace PxWebComparer.Business
 {

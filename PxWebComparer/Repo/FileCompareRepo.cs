@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PxWebComparer.Model;
-using PxWebComparer.Model.Enums;
 
 namespace PxWebComparer.Repo
 {
@@ -32,8 +28,8 @@ namespace PxWebComparer.Repo
         
         public void DeleteFile(string fileName)
         {
-           // throw new System.NotImplementedException();
-            File.Delete(fileName);
+            if (File.Exists(fileName))
+                File.Delete(fileName);
         }
 
         public void SaveToFile(CompareResultModel compareResultModel, string path)

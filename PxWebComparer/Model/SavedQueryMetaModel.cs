@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PxWebComparer.Model
 {
-    public class SavedQueryMeta
+    public class SavedQueryMetaModel
     {
         public int QueryId { get; set; }
         public string DataSourceType  { get; set; }

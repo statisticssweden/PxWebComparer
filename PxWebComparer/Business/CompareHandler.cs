@@ -3,14 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Xml;
 using PxWebComparer.Model;
 using PxWebComparer.Model.Enums;
 using PxWebComparer.Repo;
 using PxWebComparer.Services;
-using System.Reflection;
 
 
 namespace PxWebComparer.Business
@@ -33,8 +30,8 @@ namespace PxWebComparer.Business
 
             var queryTextListPath = _appSettingsHandler.ReadSetting("queryTextListPath");
 
-            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1");
-            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2");
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") + "/SavedQuery/";
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + "/SavedQuery/";
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
             var fileRepo = new FileCompareRepo();
             var compareResultModelList = new List<CompareResultModel>();
@@ -108,16 +105,15 @@ namespace PxWebComparer.Business
             }
         }
 
-        public void CompareSavedQuery()
+        public void CompareSavedQueryMetaDabase()
         {
             var fileRepo = new FileCompareRepo();
 
-            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1");
-            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2");
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") + "/SavedQueryMeta/";
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + "/SavedQueryMeta/"; ;
 
-
-            fileRepo.DeleteAllFilesInFolder(resultFolder1);
-            fileRepo.DeleteAllFilesInFolder(resultFolder2);
+            fileRepo.DeleteAllFilesInFolder($"{resultFolder1}");
+            fileRepo.DeleteAllFilesInFolder($"{resultFolder2}");
 
             int savedQueryId1 = 1;
             int savedQueryId2 = 1;
@@ -125,16 +121,44 @@ namespace PxWebComparer.Business
             var savedQueryResult1 = repo.GetSavedQueryById(savedQueryId1);
             var savedQueryResult2 = repo.GetSavedQueryById(savedQueryId2);
 
-
-
+            //fileRepo.DeleteFile($"{resultFolder1}/{savedQueryId1}/{savedQueryId1}_SavedQueryMeta.txt");
+            //fileRepo.DeleteFile($"{resultFolder2}/{savedQueryId2}/{savedQueryId2}_SavedQueryMeta.txt");
+            
             _savedQueryService.SaveToFile(savedQueryResult1,savedQueryId1.ToString(), "SavedQueryMeta", $"{resultFolder1}\\{savedQueryId1}\\");
             _savedQueryService.SaveToFile(savedQueryResult2,savedQueryId2.ToString(), "SavedQueryMeta", $"{resultFolder2}\\{savedQueryId2}\\");
+            
+            var result = CompareSavedQueryResults($@"{resultFolder1}\{savedQueryId1}\{savedQueryId1}_SavedQueryMeta.txt",
+                $@"{resultFolder2}\{savedQueryId2}\{savedQueryId2}_SavedQueryMeta.txt");
+           
+        }
 
+        public void CompareSavedQueryMetaPxsq()
+        {
+            var fileRepo = new FileCompareRepo();
+
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") + "/SavedQueryMeta/";
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + "/SavedQueryMeta/"; ;
+
+            fileRepo.DeleteAllFilesInFolder($"{resultFolder1}");
+            fileRepo.DeleteAllFilesInFolder($"{resultFolder2}");
+
+            int savedQueryId1 = 1;
+            int savedQueryId2 = 1;
+            var repo = new DatabaseRepo();
+            var savedQueryResult1 = repo.GetSavedQueryById(savedQueryId1);
+            var savedQueryResult2 = repo.GetSavedQueryById(savedQueryId2);
+
+            //fileRepo.DeleteFile($"{resultFolder1}/{savedQueryId1}/{savedQueryId1}_SavedQueryMeta.txt");
+            //fileRepo.DeleteFile($"{resultFolder2}/{savedQueryId2}/{savedQueryId2}_SavedQueryMeta.txt");
+
+            _savedQueryService.SaveToFile(savedQueryResult1, savedQueryId1.ToString(), "SavedQueryMeta", $"{resultFolder1}\\{savedQueryId1}\\");
+            _savedQueryService.SaveToFile(savedQueryResult2, savedQueryId2.ToString(), "SavedQueryMeta", $"{resultFolder2}\\{savedQueryId2}\\");
 
             var result = CompareSavedQueryResults($@"{resultFolder1}\{savedQueryId1}\{savedQueryId1}_SavedQueryMeta.txt",
                 $@"{resultFolder2}\{savedQueryId2}\{savedQueryId2}_SavedQueryMeta.txt");
 
-            
+
+
         }
 
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PxWebComparer.Model.Enums
+﻿namespace PxWebComparer.Model.Enums
 {
     public enum OutputFormat
     {

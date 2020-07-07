@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Net.Mime;
-using System.Xml;
-using Newtonsoft.Json;
 using PxWebComparer.Model.Enums;
 
 namespace PxWebComparer.Model
