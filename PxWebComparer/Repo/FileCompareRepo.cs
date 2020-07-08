@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PxWebComparer.Model;
 
 namespace PxWebComparer.Repo
@@ -56,5 +59,32 @@ namespace PxWebComparer.Repo
            
             return JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
         }
+
+
+       
+
+
+        JToken GetParent(JToken token, int parent = 0)
+        {
+            if (token == null)
+                return null;
+            if (parent < 0)
+                throw new ArgumentOutOfRangeException("Must be positive");
+
+            var skipTokens = new[]
+            {
+                typeof(JProperty),
+            };
+            return token.Ancestors()
+                .Where(a => skipTokens.All(t => !t.IsInstanceOfType(a)))
+                .Skip(parent)
+                .FirstOrDefault();
+        }
+
+        public SavedQuery ReadFromFileJson(string path)
+        {
+            return JsonConvert.DeserializeObject<SavedQuery>(File.ReadAllText(path));
+        }
+
     }
 }

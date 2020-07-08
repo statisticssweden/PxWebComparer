@@ -121,9 +121,6 @@ namespace PxWebComparer.Business
             var savedQueryResult1 = repo.GetSavedQueryById(savedQueryId1);
             var savedQueryResult2 = repo.GetSavedQueryById(savedQueryId2);
 
-            //fileRepo.DeleteFile($"{resultFolder1}/{savedQueryId1}/{savedQueryId1}_SavedQueryMeta.txt");
-            //fileRepo.DeleteFile($"{resultFolder2}/{savedQueryId2}/{savedQueryId2}_SavedQueryMeta.txt");
-            
             _savedQueryService.SaveToFile(savedQueryResult1,savedQueryId1.ToString(), "SavedQueryMeta", $"{resultFolder1}\\{savedQueryId1}\\");
             _savedQueryService.SaveToFile(savedQueryResult2,savedQueryId2.ToString(), "SavedQueryMeta", $"{resultFolder2}\\{savedQueryId2}\\");
             
@@ -136,32 +133,79 @@ namespace PxWebComparer.Business
         {
             var fileRepo = new FileCompareRepo();
 
-            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") + "/SavedQueryMeta/";
-            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + "/SavedQueryMeta/"; ;
-
-            fileRepo.DeleteAllFilesInFolder($"{resultFolder1}");
-            fileRepo.DeleteAllFilesInFolder($"{resultFolder2}");
-
-            int savedQueryId1 = 1;
-            int savedQueryId2 = 1;
-            var repo = new DatabaseRepo();
-            var savedQueryResult1 = repo.GetSavedQueryById(savedQueryId1);
-            var savedQueryResult2 = repo.GetSavedQueryById(savedQueryId2);
-
-            //fileRepo.DeleteFile($"{resultFolder1}/{savedQueryId1}/{savedQueryId1}_SavedQueryMeta.txt");
-            //fileRepo.DeleteFile($"{resultFolder2}/{savedQueryId2}/{savedQueryId2}_SavedQueryMeta.txt");
-
-            _savedQueryService.SaveToFile(savedQueryResult1, savedQueryId1.ToString(), "SavedQueryMeta", $"{resultFolder1}\\{savedQueryId1}\\");
-            _savedQueryService.SaveToFile(savedQueryResult2, savedQueryId2.ToString(), "SavedQueryMeta", $"{resultFolder2}\\{savedQueryId2}\\");
-
-            var result = CompareSavedQueryResults($@"{resultFolder1}\{savedQueryId1}\{savedQueryId1}_SavedQueryMeta.txt",
-                $@"{resultFolder2}\{savedQueryId2}\{savedQueryId2}_SavedQueryMeta.txt");
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") ;
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder1") ; ;
 
 
+            var savedQueryId1 = "test1.pxsq";
+            var savedQueryId2 = "test2.pxsq";
 
+
+            var sq1 = fileRepo.ReadFromFileJson(resultFolder1 + "/SavedQueryPxsq/"  + savedQueryId1);
+
+            var sq2 = fileRepo.ReadFromFileJson(resultFolder2 + "/SavedQueryPxsq/" + savedQueryId2);
+
+            var sq1ResultString = SavedQueryString(sq1);
+            var sq2ResultString = SavedQueryString(sq2);
+
+            fileRepo.DeleteAllFilesInFolder($"{resultFolder1}/SavedQueryMeta");
+            fileRepo.DeleteAllFilesInFolder($"{resultFolder2}/SavedQueryMeta");
+
+            _savedQueryService.SaveToFile(sq1ResultString, savedQueryId1.ToString(), "SavedQueryMeta", $"{resultFolder1}\\SavedQueryMeta\\{savedQueryId1}\\");
+            _savedQueryService.SaveToFile(sq2ResultString, savedQueryId2.ToString(), "SavedQueryMeta", $"{resultFolder2}\\SavedQueryMeta\\{ savedQueryId2}\\");
+
+            var result = CompareSavedQueryResults($@"{resultFolder1}\SavedQueryMeta\{savedQueryId1}\{savedQueryId1}_SavedQueryMeta.txt",
+                $@"{resultFolder2}\SavedQueryMeta\{savedQueryId2}\{savedQueryId2}_SavedQueryMeta.txt");
+            
         }
 
 
+        public string SavedQueryString(SavedQuery sq)
+        {
+            var resultString = string.Empty;
+            
+            foreach (var param in sq.Output.Params)
+            {
+                resultString = resultString + param.Key + param.Value;
+            }
+
+            foreach (var source in sq.Sources)
+            {
+                resultString = resultString + source.DatabaseId;
+                resultString = resultString + source.Default;
+                resultString = resultString + source.Id;
+                resultString = resultString + source.Language;
+                resultString = resultString + source.Source;
+                resultString = resultString + source.SourceIdType;
+                resultString = resultString + source.Type;
+                
+                foreach (var query in source.Quieries)
+                {
+
+                    resultString = resultString + query.Code;
+                    resultString = resultString + query.VariableType;
+                    resultString = resultString + query.Selection.Filter;
+
+                    foreach (var value in query.Selection.Values)
+                    {
+                        resultString = resultString + value;
+                    }
+                }
+            }
+            
+            foreach (var step in sq.Workflow)
+            {
+                resultString = resultString + step.Type;
+                foreach (var param in step.Params)
+                {
+                    resultString = resultString + param.Key + param.Value;
+                }
+
+            }
+            resultString = resultString + sq.Output.Type;
+            return resultString;
+        }
+        
         public bool CompareSavedQueryResults(string filePath1, string filePath2)
         {
             int file1byte;
