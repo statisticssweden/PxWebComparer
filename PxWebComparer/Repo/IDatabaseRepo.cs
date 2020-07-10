@@ -2,7 +2,7 @@
 {
     public interface IDatabaseRepo
     {
-        string GetSavedQueryById(string id);
+        string GetSavedQueryById(string id,string connectionString);
 
     }
 }

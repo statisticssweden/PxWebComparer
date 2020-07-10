@@ -8,22 +8,18 @@ namespace PxWebComparer.Repo
 {
     public class DatabaseRepo : IDatabaseRepo
     {
-
-
-
         private readonly AppSettingsHandler _appSettingsHandler = new AppSettingsHandler();
 
-        public string GetSavedQueryById(string QueryId)
+        public string GetSavedQueryById(string QueryId,string connectionString)
         {
 
             string resultString = string.Empty;
             {
 
-                var connectionString = _appSettingsHandler.ReadSetting("SavedQueryConnectionString");
+                //var connectionString = _appSettingsHandler.ReadSetting("SavedQueryConnectionString");
                 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-
                     connection.Open();
                     StringBuilder sb = new StringBuilder();
 
@@ -47,7 +43,7 @@ namespace PxWebComparer.Repo
             return resultString;
         }
 
-        public List<string> GetSavedQueries(int topRowCount = 0)
+        public List<string> GetSavedQueries(string connectionString, int topRowCount = 0 )
         {
             string resultString = string.Empty;
             List<string> result = new List<string>();
@@ -58,8 +54,6 @@ namespace PxWebComparer.Repo
                 top = $" TOP {topRowCount}";
 
             {
-
-                var connectionString = _appSettingsHandler.ReadSetting("SavedQueryConnectionString");
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -79,7 +73,6 @@ namespace PxWebComparer.Repo
                             while (reader.Read())
                             {
                                 result.Add(Convert.ToString(reader["QueryId"]));
-                                //resultString = resultString + reader.GetString(17);
                             }
                         }
                     }

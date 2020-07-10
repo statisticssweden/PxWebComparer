@@ -99,19 +99,6 @@ namespace PxWebComparer.Business
                                 result = null;
                             }
 
-                            //_savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery(
-                            //        $"{serverAddress1}{query}.{outputFormat}"), query,
-                            //outputFormat.ToString(), $"{resultFolder1}\\{query}\\");
-
-                            //_savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
-                            //outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
-
-                            //  Thread.Sleep(1000);
-
-                            //result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
-                            //    $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
-
-
                         }
                         compareResultModel.UpdateModel(outputFormat, result);
                     }
@@ -130,6 +117,8 @@ namespace PxWebComparer.Business
             var fileRepo = new FileCompareRepo();
             var compareResultModelList = new List<CompareResultModel>();
             var savedQueryMetaCompareResultModel = new List<SavedQueryMetaCompareResultModel>();
+            var connstring1 = _appSettingsHandler.ReadSetting("SavedQueryConnectionString1");
+            var connstring2 = _appSettingsHandler.ReadSetting("SavedQueryConnectionString2");
 
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareSavedQueryResultFile");
 
@@ -141,21 +130,25 @@ namespace PxWebComparer.Business
 
             var repo = new  DatabaseRepo();
 
-            var savedQueries = repo.GetSavedQueries( 10);
+            var savedQueries = repo.GetSavedQueries(connstring1, 10);
 
             foreach (var savedQuery in savedQueries)
             {
-                var savedQueryResult1 = repo.GetSavedQueryById(savedQuery);
-                var savedQueryResult2 = repo.GetSavedQueryById(savedQuery);
+                
+
+                var savedQueryResult1 = repo.GetSavedQueryById(savedQuery,connstring1);
+                var savedQueryResult2 = repo.GetSavedQueryById(savedQuery, connstring2);
 
                 if(savedQueryResult1 != string.Empty && savedQueryResult2 != string.Empty)
                 {
+                    _savedQueryService.SaveToFile(savedQueryResult1, savedQuery, "SavedQueryMeta",
+                        $"{resultFolder1}\\{savedQuery}\\");
+                    _savedQueryService.SaveToFile(savedQueryResult2, savedQuery, "SavedQueryMeta",
+                        $"{resultFolder2}\\{savedQuery}\\");
 
-                _savedQueryService.SaveToFile(savedQueryResult1, savedQuery, "SavedQueryMeta", $"{resultFolder1}\\{savedQuery}\\");
-                _savedQueryService.SaveToFile(savedQueryResult2, savedQuery, "SavedQueryMeta", $"{resultFolder2}\\{savedQuery}\\");
-
-                var result = CompareSavedQueryResults($@"{resultFolder1}\{savedQuery}\{savedQuery}_SavedQueryMeta.txt",
-                    $@"{resultFolder2}\{savedQuery}\{savedQuery}_SavedQueryMeta.txt");
+                    var result = CompareSavedQueryResults(
+                        $@"{resultFolder1}\{savedQuery}\{savedQuery}_SavedQueryMeta.txt",
+                        $@"{resultFolder2}\{savedQuery}\{savedQuery}_SavedQueryMeta.txt");
                 
                 savedQueryMetaCompareResultModel.Add(new SavedQueryMetaCompareResultModel() {Id = savedQuery, Result = result} );
                 }
@@ -174,16 +167,17 @@ namespace PxWebComparer.Business
             var savedQueryMetaCompareResultModel = new List<SavedQueryMetaCompareResultModel>();
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareSavedQueryResultFile");
 
-            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") + @"\SavedQueryPxsq";
-            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + @"\SavedQueryPxsq";
+            var pxsqFolder1 = _appSettingsHandler.ReadSetting("SQFileFormat1");
+            var pxsqFolder2 = _appSettingsHandler.ReadSetting("SQFileFormat1");
+            
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1");
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2");
 
 
-            var directory = new DirectoryInfo(resultFolder1);
+            var directory = new DirectoryInfo(pxsqFolder1);
             var masks = new[] { "*.pxsq" };
             var savedQueryIds = masks.SelectMany(directory.EnumerateFiles);
-
             
-
             fileRepo.DeleteAllFilesInFolder($"{_appSettingsHandler.ReadSetting("ResultFolder1")}/SavedQueryMeta/");
             fileRepo.DeleteAllFilesInFolder($"{_appSettingsHandler.ReadSetting("ResultFolder2")}/SavedQueryMeta/");
             
@@ -191,8 +185,8 @@ namespace PxWebComparer.Business
             {
                 var sqId = savedQueryId.Name.Substring(0, savedQueryId.Name.LastIndexOf("."));
 
-                var sq1 = fileRepo.ReadFromFileJson($"{resultFolder1}\\{savedQueryId.Name}");
-                var sq2 = fileRepo.ReadFromFileJson($"{resultFolder2}\\{savedQueryId.Name}");
+                var sq1 = fileRepo.ReadFromFileJson($"{pxsqFolder1}\\{savedQueryId.Name}");
+                var sq2 = fileRepo.ReadFromFileJson($"{pxsqFolder2}\\{savedQueryId.Name}");
 
                 if (sq1 != null && sq2 != null)
                 {

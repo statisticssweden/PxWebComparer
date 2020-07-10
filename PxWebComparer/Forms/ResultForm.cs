@@ -19,35 +19,16 @@ namespace PxWebComparer.Forms
         {
             InitializeComponent();
             _compareHandler = new CompareHandler();
-            LoadData();
+            radioButtonFile.Checked = true;
+            FillForms();
         }
 
-        //private void ResultForm_Enter(object sender, EventArgs e)
-        //{
+        private void FillForms()
+        {
+            LoadData();
+            LoadSavedQueryData();
+        }
 
-
-        //    var results = _compareHandler.GetResults();
-
-        //    foreach (var result in results)
-        //    {
-        //        var lvi = new ListViewItem();
-        //        lvi.Text = result.SavedQuery.ToString();
-        //        lvi.SubItems.Add(result.csv.ToString());
-
-        //    }
-
-        //    //foreach (Book b in Program.ListBooks)
-        //    //{
-        //    //    ListViewItem lvi = new ListViewItem();
-        //    //    lvi.Text = b.IdBook.ToString();
-        //    //    lvi.SubItems.Add(b.Author);
-        //    //    lvi.SubItems.Add(b.Title);
-        //    //    lvi.SubItems.Add(b.Year.ToString());
-        //    //    listViewBooks.Items.Add(lvi);
-        //    //}
-
-
-        //}
 
         private void LoadData()
         {
@@ -83,13 +64,9 @@ namespace PxWebComparer.Forms
                 lvi.SubItems.Add(result.html5_table.ToString());
                 lvi.SubItems.Add(result.relational_table.ToString());
                 lvi.SubItems.Add(result.json.ToString());
-
-             
+                
                 listViewResult.Items.Add(lvi);
             }
-
-
-
         }
 
 
@@ -114,24 +91,28 @@ namespace PxWebComparer.Forms
             }
         }
 
-
-
-
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        private void buttonCompareMeta_Click(object sender, EventArgs e)
         {
-
+            Cursor.Current = Cursors.WaitCursor;
+            
+            if (radioButtonFile.Checked) 
+                _compareHandler.CompareSavedQueryMetaPxsq();
+            else
+                _compareHandler.CompareSavedQueryMetaDatabase();
+            
             LoadSavedQueryData();
+            
+            Cursor.Current = Cursors.Default;
+        }
+
+        private void buttonResults_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            _compareHandler.Compare();
             LoadData();
-
-            if (tabPageSavedQueryResult.Focused)
-            {
-                LoadData();
-            }
-            if (tabPageSavedQueryMeta.Focused)
-            {
-                LoadSavedQueryData();
-            }
-
+            
+            Cursor.Current = Cursors.Default;
 
         }
     }
