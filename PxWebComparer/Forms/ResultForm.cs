@@ -51,8 +51,7 @@ namespace PxWebComparer.Forms
 
         private void LoadData()
         {
-
-
+            listViewResult.Clear();
             var results = _compareHandler.GetResults();
             listViewResult.View = View.Details;
             _ = listViewResult.Columns.Add("SQ id", 400, HorizontalAlignment.Left);
@@ -85,25 +84,7 @@ namespace PxWebComparer.Forms
                 lvi.SubItems.Add(result.relational_table.ToString());
                 lvi.SubItems.Add(result.json.ToString());
 
-                //px
-                //    ,xlsx
-                //    ,xlsx_doublecolumn
-                //    ,csv
-                //    ,csv_tab
-                //    ,csv_tabhead
-                //    ,csv_comma
-                //    ,csv_commahead
-                //    ,csv_space
-                //    ,csv_spacehead
-                //    ,csv_semicolon
-                //    ,csv_semicololhead
-                //    ,json_stat
-                //    ,html5_table
-                //    ,relational_table
-                //    ,json
-                //lvi.SubItems.Add(result.csv_space.ToString());
-                //lvi.SubItems.Add(result.csv_semicololhead.ToString());
-                //lvi.SubItems.Add(result.csv_tab.ToString());
+             
                 listViewResult.Items.Add(lvi);
             }
 
@@ -112,16 +93,43 @@ namespace PxWebComparer.Forms
         }
 
 
+        private void LoadSavedQueryData()
+        {
+            listViewQueryResult.Clear();
+            var results = _compareHandler.GetSavedQueryResults();
+           
+            listViewQueryResult.View = View.Details;
+            
+            listViewQueryResult.View = View.Details;
+            _ = listViewQueryResult.Columns.Add("Id", 400, HorizontalAlignment.Left);
+
+            _ = listViewQueryResult.Columns.Add("Result", 200, HorizontalAlignment.Left);
+
+            foreach (var result in results)
+            {
+                var lvi = new ListViewItem();
+                lvi.Text = result.Id;
+                lvi.SubItems.Add(result.Result.ToString());
+                listViewQueryResult.Items.Add(lvi);
+            }
+        }
+
+
+
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+            LoadSavedQueryData();
+            LoadData();
+
             if (tabPageSavedQueryResult.Focused)
             {
                 LoadData();
             }
             if (tabPageSavedQueryMeta.Focused)
             {
-                LoadData();
+                LoadSavedQueryData();
             }
 
 

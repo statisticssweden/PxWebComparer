@@ -343,6 +343,14 @@ namespace PxWebComparer.Business
             return fileRepo.ReadFromFile(compareResultFile);
         }
 
+        public List<SavedQueryMetaCompareResultModel> GetSavedQueryResults()
+        {
+            var compareResultFile = _appSettingsHandler.ReadSetting("CompareSavedQueryResultFile");
+            var fileRepo = new FileCompareRepo();
+            return fileRepo.ReadFromSaveCompareResultModels(compareResultFile);
+        }
+
+
     }
 
 }

@@ -59,6 +59,14 @@ namespace PxWebComparer.Repo
             return JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
         }
 
+        public List<SavedQueryMetaCompareResultModel> ReadFromSaveCompareResultModels(string path)
+        {
+            var json = File.ReadAllText(path);
+
+            return JsonConvert.DeserializeObject<List<SavedQueryMetaCompareResultModel>>(json);
+        }
+
+
         public SavedQuery ReadFromFileJson(string path)
         {
             try
