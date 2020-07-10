@@ -49,37 +49,67 @@ namespace PxWebComparer.Business
                     
                     foreach (var outputFormat in outputFormats)
                     {
-                        bool result = false;
+                        bool saveQuery1;
+                        bool saveQuery2;
+                        bool? result;
+                        
                         if (outputFormat == OutputFormat.xlsx || outputFormat == OutputFormat.xlsx_doublecolumn)
                         {
 
-                            _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}" ,
+                            saveQuery1 = _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}" ,
                                 "xlsx", $"{resultFolder1}\\{query}\\");
 
-                            _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}",
+                            saveQuery2 = _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}",
                                 "xlsx", $"{resultFolder2}\\{query}\\");
 
                             Thread.Sleep(1000);
-
-                            var resultList1 = _excelComparer.ReadExcelFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.xlsx");
-
-                            var resultList2 = _excelComparer.ReadExcelFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.xlsx");
                             
-                            result = CompareArrayLists(resultList1, resultList2);
-
+                            if (saveQuery1 && saveQuery2)
+                            {
+                                var resultList1 = _excelComparer.ReadExcelFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.xlsx");
+                                var resultList2 = _excelComparer.ReadExcelFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.xlsx");
+                                result = CompareArrayLists(resultList1, resultList2);
+                            }
+                            else
+                            {
+                                result = null;
+                            }
                         }
                         else
                         {
-                            _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}"), query,
-                            outputFormat.ToString(), $"{resultFolder1}\\{query}\\");
+                            var res1 = _savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}");
 
-                            _savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
-                            outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
+                            var res2 = _savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}");
 
                             Thread.Sleep(1000);
-                        
-                        result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
-                            $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+
+                            if (res1 != null && res2 != null)
+                            {
+                                _savedQueryService.SaveToFile(res1, query, outputFormat.ToString(),
+                                    $"{resultFolder1}\\{query}\\");
+                                _savedQueryService.SaveToFile(res2, query, outputFormat.ToString(),
+                                    $"{resultFolder2}\\{query}\\");
+                            
+                                result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
+                                    $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+
+                            }
+                            else
+                            {
+                                result = null;
+                            }
+
+                            //_savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery(
+                            //        $"{serverAddress1}{query}.{outputFormat}"), query,
+                            //outputFormat.ToString(), $"{resultFolder1}\\{query}\\");
+
+                            //_savedQueryService.SaveToFile(_savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}"), query,
+                            //outputFormat.ToString(), $"{resultFolder2}\\{query}\\");
+
+                            //  Thread.Sleep(1000);
+
+                            //result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
+                            //    $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
 
 
                         }

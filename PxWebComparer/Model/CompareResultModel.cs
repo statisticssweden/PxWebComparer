@@ -6,24 +6,24 @@ namespace PxWebComparer.Model
     public class CompareResultModel
     {
         public string SavedQuery { get; set; }
-        public bool px { get; set; }
-        public bool xlsx { get; set; }
-        public bool xlsx_doublecolumn { get; set; }
-        public bool csv { get; set; }
-        public bool csv_tab { get; set; }
-        public bool csv_tabhead { get; set; }
-        public bool csv_comma { get; set; }
-        public bool csv_commahead { get; set; }
-        public bool csv_space { get; set; }
-        public bool csv_spacehead { get; set; }
-        public bool csv_semicolon { get; set; }
-        public bool csv_semicolonhead { get; set; }
-        public bool json_stat { get; set; }
-        public bool relational_table { get; set; }
-        public bool html5_table { get; set; }
-        public bool json { get; set; }
+        public bool? px { get; set; }
+        public bool? xlsx { get; set; }
+        public bool? xlsx_doublecolumn { get; set; }
+        public bool? csv { get; set; }
+        public bool? csv_tab { get; set; }
+        public bool? csv_tabhead { get; set; }
+        public bool? csv_comma { get; set; }
+        public bool? csv_commahead { get; set; }
+        public bool? csv_space { get; set; }
+        public bool? csv_spacehead { get; set; }
+        public bool? csv_semicolon { get; set; }
+        public bool? csv_semicolonhead { get; set; }
+        public bool? json_stat { get; set; }
+        public bool? relational_table { get; set; }
+        public bool? html5_table { get; set; }
+        public bool? json { get; set; }
 
-        public void UpdateModel(Enum outputFormat, bool result)
+        public void UpdateModel(Enum outputFormat, bool? result)
         {
             switch (outputFormat)
             {

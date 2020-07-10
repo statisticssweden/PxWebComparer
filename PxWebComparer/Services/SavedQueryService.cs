@@ -13,31 +13,51 @@ namespace PxWebComparer.Services
 
             {
                 HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+                try
+                {
 
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        using (Stream stream = response.GetResponseStream())
-                        using (StreamReader reader = new StreamReader(stream))
+                    using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                        if (response.StatusCode == HttpStatusCode.OK)
                         {
-                            resultString = reader.ReadToEnd();
+                            using (Stream stream = response.GetResponseStream())
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                resultString = reader.ReadToEnd();
+                            }
                         }
-                    }
+                        else
+                        {
+                            return null;
+                        }
+                }
+                catch (WebException)
+                {
+                    return null;
+                }
+
             }
             return resultString;
         }
         
-        public void SaveFile(string url, string fileName, string savedQueryFormat, string path)
+        public bool SaveFile(string url, string fileName, string savedQueryFormat, string path)
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
             request.AutomaticDecompression = DecompressionMethods.GZip;
-            using (WebResponse response = request.GetResponse())
+            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
             {
-                using (Stream fs = File.Create($"{path}/{fileName}.{savedQueryFormat}"))
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    response.GetResponseStream().CopyTo(fs);
+                    using (Stream fs = File.Create($"{path}/{fileName}.{savedQueryFormat}"))
+                    {
+                        response.GetResponseStream().CopyTo(fs);
+                    }
+                }
+                else
+                {
+                    return false;
                 }
             }
+            return true;
         }
 
         public void SaveToFile(string content, string fileName, string savedQueryFormat, string path)
