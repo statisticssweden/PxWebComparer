@@ -11,10 +11,6 @@ namespace PxWebComparer.Business
     {
         public ArrayList ReadExcelFile(string fileName)
         {
-
-            try
-            {
-
             using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fileName, false))
             {
                 WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
@@ -22,16 +18,16 @@ namespace PxWebComparer.Business
                 SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
 
                 ArrayList data = new ArrayList();
-                
+
                 foreach (Row r in sheetData.Elements<Row>())
                 {
                     foreach (Cell c in r.Elements<Cell>())
                     {
-                       
                         if (c.DataType != null && c.DataType == CellValues.SharedString && c.InnerText != string.Empty)
                         {
                             var stringId = Convert.ToInt32(Regex.Unescape(c.InnerText));
-                            data.Add(Regex.Unescape(workbookPart.SharedStringTablePart.SharedStringTable.Elements<SharedStringItem>()
+                            data.Add(Regex.Unescape(workbookPart.SharedStringTablePart.SharedStringTable
+                                .Elements<SharedStringItem>()
                                 .ElementAt(stringId).InnerText));
                         }
                         else if (c.InnerText != null || c.InnerText != string.Empty)
@@ -40,15 +36,9 @@ namespace PxWebComparer.Business
                         }
                     }
                 }
+
                 return data;
             }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
         }
     }
 }

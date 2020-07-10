@@ -32,33 +32,35 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageSavedQueryResult = new System.Windows.Forms.TabPage();
             this.tabPageSavedQueryMeta = new System.Windows.Forms.TabPage();
+            this.listViewQueryResult = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tabPageSavedQueryResult.SuspendLayout();
+            this.tabPageSavedQueryMeta.SuspendLayout();
             this.SuspendLayout();
             // 
             // listViewResult
             // 
             this.listViewResult.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.listViewResult.HideSelection = false;
-            this.listViewResult.Location = new System.Drawing.Point(3, 203);
+            this.listViewResult.Location = new System.Drawing.Point(3, 90);
             this.listViewResult.Name = "listViewResult";
-            this.listViewResult.Size = new System.Drawing.Size(1089, 292);
+            this.listViewResult.Size = new System.Drawing.Size(1089, 405);
             this.listViewResult.TabIndex = 0;
             this.listViewResult.UseCompatibleStateImageBehavior = false;
             // 
-            // tabControl1
+            // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPageSavedQueryResult);
             this.tabControl.Controls.Add(this.tabPageSavedQueryMeta);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
+            this.tabControl.SelectedIndex = 1;
             this.tabControl.Size = new System.Drawing.Size(1103, 531);
             this.tabControl.TabIndex = 1;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
-            // tabPage1
+            // tabPageSavedQueryResult
             // 
             this.tabPageSavedQueryResult.Controls.Add(this.listViewResult);
             this.tabPageSavedQueryResult.Location = new System.Drawing.Point(4, 29);
@@ -69,8 +71,9 @@
             this.tabPageSavedQueryResult.Text = "tabPage1";
             this.tabPageSavedQueryResult.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // tabPageSavedQueryMeta
             // 
+            this.tabPageSavedQueryMeta.Controls.Add(this.listViewQueryResult);
             this.tabPageSavedQueryMeta.Location = new System.Drawing.Point(4, 29);
             this.tabPageSavedQueryMeta.Name = "tabPageSavedQueryMeta";
             this.tabPageSavedQueryMeta.Padding = new System.Windows.Forms.Padding(3);
@@ -78,6 +81,16 @@
             this.tabPageSavedQueryMeta.TabIndex = 1;
             this.tabPageSavedQueryMeta.Text = "tabPage2";
             this.tabPageSavedQueryMeta.UseVisualStyleBackColor = true;
+            // 
+            // listViewQueryResult
+            // 
+            this.listViewQueryResult.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.listViewQueryResult.HideSelection = false;
+            this.listViewQueryResult.Location = new System.Drawing.Point(3, 61);
+            this.listViewQueryResult.Name = "listViewQueryResult";
+            this.listViewQueryResult.Size = new System.Drawing.Size(1089, 434);
+            this.listViewQueryResult.TabIndex = 0;
+            this.listViewQueryResult.UseCompatibleStateImageBehavior = false;
             // 
             // ResultForm
             // 
@@ -90,6 +103,7 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tabControl.ResumeLayout(false);
             this.tabPageSavedQueryResult.ResumeLayout(false);
+            this.tabPageSavedQueryMeta.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -100,5 +114,6 @@
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPageSavedQueryResult;
         private System.Windows.Forms.TabPage tabPageSavedQueryMeta;
+        private System.Windows.Forms.ListView listViewQueryResult;
     }
 }

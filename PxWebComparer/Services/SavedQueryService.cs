@@ -10,29 +10,19 @@ namespace PxWebComparer.Services
         public string GetSavedQuery(string url)
         {
             string resultString = string.Empty;
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    using (Stream stream = response.GetResponseStream())
-                    using (StreamReader reader = new StreamReader(stream))
+            {
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+
+                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        resultString = reader.ReadToEnd();
+                        using (Stream stream = response.GetResponseStream())
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            resultString = reader.ReadToEnd();
+                        }
                     }
-                }
-            }
-
-            catch (WebException e)
-            {
-                Console.WriteLine("\r\nWebException Raised. The following error occurred : {0}", e.Status);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("\nThe following Exception was raised : {0}", e.Message);
             }
             return resultString;
         }

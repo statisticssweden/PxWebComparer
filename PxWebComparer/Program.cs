@@ -17,15 +17,17 @@ namespace PxApiComparer
 
             try
             {
+                
                 handler.CompareSavedQueryMetaPxsq();
+                handler.CompareSavedQueryMetaDatabase();
                 handler.Compare();
-                handler.CompareSavedQueryMetaDabase();
-             
+                            
                 Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new ResultForm());
             }
+            
             catch (Exception e)
             {
                 Console.WriteLine(e);

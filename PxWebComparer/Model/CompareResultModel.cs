@@ -5,8 +5,6 @@ namespace PxWebComparer.Model
 {
     public class CompareResultModel
     {
-        //todo: gör om till sträng
-        //public UniqueId SavedQuery { get; set; }
         public string SavedQuery { get; set; }
         public bool px { get; set; }
         public bool xlsx { get; set; }
