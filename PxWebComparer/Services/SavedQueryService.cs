@@ -38,7 +38,12 @@ namespace PxWebComparer.Services
             }
             return resultString;
         }
-        
+
+        public string PostSavedQuery()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool SaveFile(string url, string fileName, string savedQueryFormat, string path)
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;

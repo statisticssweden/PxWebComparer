@@ -18,7 +18,7 @@ namespace PxApiComparer
             try
             {
                 
-                //handler.CompareSavedQueryMetaPxsq();
+                handler.CompareSavedQueryMetaPxsq();
                 //handler.CompareSavedQueryMetaDatabase();
                 //handler.Compare();
                             

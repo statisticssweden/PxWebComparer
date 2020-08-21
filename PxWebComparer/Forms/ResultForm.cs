@@ -115,5 +115,26 @@ namespace PxWebComparer.Forms
             Cursor.Current = Cursors.Default;
 
         }
+
+        private void buttonAPI_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            _compareHandler.CompareApi();
+
+            //if (radioButtonFile.Checked)
+            //    _compareHandler.CompareSavedQueryMetaPxsq();
+            //else
+            //    _compareHandler.CompareSavedQueryMetaDatabase();
+
+            //LoadSavedQueryData();
+
+            Cursor.Current = Cursors.Default;
+        }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

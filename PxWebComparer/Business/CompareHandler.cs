@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Newtonsoft.Json;
 using PxWebComparer.Model;
 using PxWebComparer.Model.Enums;
+using PxWebComparer.Model.PCAxis.Query;
 using PxWebComparer.Repo;
 using PxWebComparer.Services;
 
@@ -24,9 +26,9 @@ namespace PxWebComparer.Business
         {
             
             // get url for api site 1
-            var serverAddress1 = _appSettingsHandler.ReadSetting("WebApiAddress1");
+            var serverAddress1 = _appSettingsHandler.ReadSetting("WebApiAddress1") + $"sq/";
             // get url for api site 2
-            var serverAddress2 = _appSettingsHandler.ReadSetting("WebApiAddress2");
+            var serverAddress2 = _appSettingsHandler.ReadSetting("WebApiAddress2") + $"sq/" ;
 
             var queryTextListPath = _appSettingsHandler.ReadSetting("queryTextListPath");
 
@@ -211,6 +213,7 @@ namespace PxWebComparer.Business
         }
 
 
+
         public string SavedQueryString(SavedQuery sq)
         {
             var resultString = string.Empty;
@@ -307,6 +310,123 @@ namespace PxWebComparer.Business
             // equal to "file2byte" at this point only if the files are 
             // the same.
             return ((file1Byte - file2Byte) == 0);
+
+
+        }
+
+        public void CompareApi()
+        {
+
+            // get url for api site 1
+            var serverAddress1 = _appSettingsHandler.ReadSetting("WebApiAddress1") ;
+            // get url for api site 2
+            var serverAddress2 = _appSettingsHandler.ReadSetting("WebApiAddress2") ;
+
+            var queryTextListPath = _appSettingsHandler.ReadSetting("queryTextListPath");
+
+            var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1") + "/SavedQuery/";
+            var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + "/SavedQuery/";
+            var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
+            var fileRepo = new FileCompareRepo();
+            var compareResultModelList = new List<CompareResultModel>();
+
+
+            
+            var qString = $"api/v1/en/ssd/START/BO/BO0101/BO0101A/LagenhetNyAr";
+            var res = JsonConvert.DeserializeObject<MetaTable>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+
+            var querySelection = new PxWebComparer.Model.PCAxis.Query.QuerySelection()
+            {
+                Values = 
+                Filter = "item"
+            }
+
+            var query = new  Query()
+            {
+
+            }
+
+            var tableQuery = new TableQuery()
+            {
+
+            }
+
+
+            var queryList = _repo.GetSavedQueryFileFormat(queryTextListPath);
+
+            fileRepo.DeleteAllFilesInFolder(resultFolder1);
+            fileRepo.DeleteAllFilesInFolder(resultFolder2);
+            {
+                foreach (var query in queryList)
+                {
+                    var compareResultModel = new CompareResultModel { SavedQuery = query };
+
+                    var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>();
+
+                    foreach (var outputFormat in outputFormats)
+                    {
+                        bool saveQuery1;
+                        bool saveQuery2;
+                        bool? result;
+
+                        if (outputFormat == OutputFormat.xlsx || outputFormat == OutputFormat.xlsx_doublecolumn)
+                        {
+
+                            saveQuery1 = _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}",
+                                "xlsx", $"{resultFolder1}\\{query}\\");
+
+                            saveQuery2 = _savedQueryService.SaveFile($"{serverAddress1}{query}.{outputFormat}", $"{query}_{outputFormat}",
+                                "xlsx", $"{resultFolder2}\\{query}\\");
+
+                            Thread.Sleep(1000);
+
+                            if (saveQuery1 && saveQuery2)
+                            {
+                                var resultList1 = _excelComparer.ReadExcelFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.xlsx");
+                                var resultList2 = _excelComparer.ReadExcelFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.xlsx");
+                                result = CompareArrayLists(resultList1, resultList2);
+                            }
+                            else
+                            {
+                                result = null;
+                            }
+                        }
+                        else
+                        {
+                            var res1 = _savedQueryService.GetSavedQuery($"{serverAddress1}{query}.{outputFormat}");
+
+                            var res2 = _savedQueryService.GetSavedQuery($"{serverAddress2}{query}.{outputFormat}");
+
+                            Thread.Sleep(1000);
+
+                            if (res1 != null && res2 != null)
+                            {
+                                _savedQueryService.SaveToFile(res1, query, outputFormat.ToString(),
+                                    $"{resultFolder1}\\{query}\\");
+                                _savedQueryService.SaveToFile(res2, query, outputFormat.ToString(),
+                                    $"{resultFolder2}\\{query}\\");
+
+                                result = CompareSavedQueryResults($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
+                                    $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+
+                            }
+                            else
+                            {
+                                result = null;
+                            }
+
+                        }
+                        compareResultModel.UpdateModel(outputFormat, result);
+                    }
+
+                    compareResultModelList.Add(compareResultModel);
+                }
+
+                fileRepo.DeleteFile(compareResultFile);
+                fileRepo.SaveToFile(compareResultModelList, compareResultFile);
+                var resultFile = fileRepo.ReadFromFile(compareResultFile);
+            }
+
 
 
         }
