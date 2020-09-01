@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Newtonsoft.Json;
 using PxWebComparer.Model;
 using PxWebComparer.Model.Enums;
-using PxWebComparer.Model.PCAxis.Query;
 using PxWebComparer.Repo;
 using PxWebComparer.Services;
 
@@ -259,7 +260,29 @@ namespace PxWebComparer.Business
             resultString += sq.Output.Type;
             return resultString;
         }
-        
+
+
+        public List<MenuItem> GetMenuItems (List<MenuItem> menuItems)
+        {
+            var returnMenuItems = new List<MenuItem>();
+
+            if (menuItems.Count() > 2)
+            {
+                returnMenuItems.Add(menuItems.First());
+                returnMenuItems.Add(menuItems.ElementAt(menuItems.Count() / 2));
+                returnMenuItems.Add(menuItems.Last());
+            }
+            else
+            {
+                foreach (var metItem in menuItems)
+                {
+                    returnMenuItems.Add(metItem);
+                }
+            }
+            return returnMenuItems;
+        }
+
+
         public bool CompareSavedQueryResults(string filePath1, string filePath2)
         {
             int file1Byte;
@@ -314,6 +337,9 @@ namespace PxWebComparer.Business
 
         }
 
+
+       
+
         public void CompareApi()
         {
 
@@ -330,26 +356,97 @@ namespace PxWebComparer.Business
             var fileRepo = new FileCompareRepo();
             var compareResultModelList = new List<CompareResultModel>();
 
+            string qString = string.Empty;
 
-            
-            var qString = $"api/v1/en/ssd/START/BO/BO0101/BO0101A/LagenhetNyAr";
-            var res = JsonConvert.DeserializeObject<MetaTable>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
 
-            var querySelection = new PxWebComparer.Model.PCAxis.Query.QuerySelection()
+            //http://api.scb.se/OV0104/v1/doris/sv/ssd/START/JO/JO1104/F3ny
+
+            qString = $"api/v1/sv/ssd/START/JO/JO1104/F3ny";
+
+            var tableQuery = GetTableQuery();
+
+
+            _savedQueryService.PostSavedQuery("http://api.scb.se/OV0104/v1/doris/sv/ssd/START/JO/JO1104/F3ny", tableQuery);
+
+
+
+
+
+            qString = $"api/v1/sv";
+
+            var firstLevel =  _savedQueryService.GetSavedQuery(serverAddress1 + qString);
+
+            qString +=  $"/ssd";
+
+            //var secondLevel = _savedQueryService.GetSavedQuery(serverAddress1 + qString);
+
+            var menuItems = JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+
+            // check if there are items
+
+            //var menuItems  = new List<MenuItem>();
+
+            //menuItems.Add(new MenuItem() { Id = "A", Text = "De", Type = "I" });
+            //menuItems.Add(new MenuItem() { Id = "B", Text = "De", Type = "I" });
+            //menuItems.Add(new MenuItem() { Id = "C", Text = "De", Type = "I" });
+            //menuItems.Add(new MenuItem() { Id = "D", Text = "De", Type = "I" });
+            //menuItems.Add(new MenuItem() { Id = "E", Text = "De", Type = "I" });
+
+            menuItems =  GetMenuItems(menuItems.ToList());
+
+            foreach (var menuItem in menuItems)
             {
-                Values = 
-                Filter = "item"
+                qString += $"/{menuItem.Id}";
+                var level1Items = JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+                level1Items =   GetMenuItems(level1Items.ToList());
+                foreach (var level1Item in level1Items)
+                {
+                    qString += $"/{level1Item.Id}";
+                    var level2Items = JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+                    level2Items = GetMenuItems(level2Items.ToList());
+                    foreach (var level2Item in level2Items)
+                    {
+                        qString += $"/{level2Item.Id}";
+                        var level3Items = JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+                        level3Items = GetMenuItems(level3Items.ToList());
+                        foreach (var level3Item in level3Items)
+                        {
+                            qString += $"/{level3Item.Id}";
+
+                            var res = JsonConvert.DeserializeObject<MetaTable>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+
+
+                        }
+
+                        var metaTable = JsonConvert.DeserializeObject<MetaTable>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+
+
+                    }
+
+
+                }
+
+                var menuItem2 = JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(_savedQueryService.GetSavedQuery(serverAddress1 + qString));
+
+
             }
 
-            var query = new  Query()
-            {
+           
+            //var querySelection = new PxWebComparer.Model.PCAxis.Query.QuerySelection()
+            //{
+            //    Values = {},
+            //    Filter = "item"
+            //}
 
-            }
+            //var query = new  Query()
+            //{
 
-            var tableQuery = new TableQuery()
-            {
+            //}
 
-            }
+            //var tableQuery = new TableQuery()
+            //{
+
+            //}
 
 
             var queryList = _repo.GetSavedQueryFileFormat(queryTextListPath);
@@ -429,6 +526,46 @@ namespace PxWebComparer.Business
 
 
 
+        }
+
+        public TableQuery GetTableQuery()
+        {
+            
+                TableQuery tableQuery = new TableQuery();
+
+                //tableQuery.Query = new Query[];
+
+                var queryList = new Query[]
+                {
+                new Query()
+                {
+                    Code = "Redskap",
+                    Selection = new Model.QuerySelection()
+                    {
+                        Filter = "item",
+                        Values = new string[] {"23", "21"}
+                    }
+                },
+                new Query()
+                {
+                    Code = "Omrade2",
+                    Selection = new Model.QuerySelection()
+                    {
+                        Filter = "item",
+                        Values = new string[] {"12"}
+                    },
+                }
+                };
+                tableQuery.Query = queryList;
+
+                QueryResponse response = new QueryResponse();
+
+                response.Format = "px";
+
+                tableQuery.Response = response;
+
+                return tableQuery;
+            
         }
 
         public bool CompareArrayLists(ArrayList arrayList1, ArrayList arrayList2)

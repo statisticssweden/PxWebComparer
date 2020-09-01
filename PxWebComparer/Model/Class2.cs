@@ -12,9 +12,7 @@ namespace PxWebComparer.Model
     using Newtonsoft.Json;
    // using PCAxis.Paxiom;
 
-    namespace PCAxis.Query
-    {
-        public class TableQuery
+   public class TableQuery
         {
             [JsonProperty("query")]
             public Query[] Query { get; set; }
@@ -25,9 +23,9 @@ namespace PxWebComparer.Model
             /// <summary>
             /// Default constructor
             /// </summary>
-            public TableQuery()
-            {   
-            }
+            //public TableQuery()
+            //{   
+            //}
 
             ///// <summary>
             ///// Constructor
@@ -109,51 +107,26 @@ namespace PxWebComparer.Model
             //    this.Response = new QueryResponse();
             //    this.Response.Format = "px";
             //}
-            public TableQuery CreateCopy()
-            {
-                TableQuery newObject;
-                newObject = (TableQuery)this.MemberwiseClone();
-
-                newObject.Query = new Query[this.Query.Length];
-                for (int i = 0; i < this.Query.Length; i++)
-                {
-                    if (this.Query[i] != null)
-                    {
-                        newObject.Query[i] = this.Query[i].CreateCopy();
-                    }
-                }
-
-                newObject.Response = this.Response.CreateCopy();
-
-                return newObject;
-            }
+           
         }
 
 
-        public class Query
-        {
-            [JsonProperty("code")]
-            public string Code { get; set; }
+        //public class Query
+        //{
+        //    [JsonProperty("code")]
+        //    public string Code { get; set; }
 
-            /// <summary>
-            /// Lägg till variabltyp i JSON formatet T(ime)/C(ontents)/G(eograpical)/N(ormal)
-            /// </summary>
-            [JsonProperty("variableType")]
-            public string VariableType { get; set; }
+        //    /// <summary>
+        //    /// Lägg till variabltyp i JSON formatet T(ime)/C(ontents)/G(eograpical)/N(ormal)
+        //    /// </summary>
+        //    [JsonProperty("variableType")]
+        //    public string VariableType { get; set; }
 
-            [JsonProperty("selection")]
-            public QuerySelection Selection { get; set; }
+        //    [JsonProperty("selection")]
+        //    public QuerySelection Selection { get; set; }
 
-            public Query CreateCopy()
-            {
-                Query newObject;
-                newObject = (Query)this.MemberwiseClone();
-
-                newObject.Selection = this.Selection.CreateCopy();
-
-                return newObject;
-            }
-        }
+           
+        //}
 
         public class QuerySelection
         {
@@ -163,22 +136,6 @@ namespace PxWebComparer.Model
             [JsonProperty("values")]
             public string[] Values { get; set; }
 
-            public QuerySelection CreateCopy()
-            {
-                QuerySelection newObject;
-                newObject = (QuerySelection)this.MemberwiseClone();
-
-                newObject.Values = new string[this.Values.Length];
-
-                for (int i = 0; i < this.Values.Length; i++)
-                {
-                    if (this.Values[i] != null)
-                    {
-                        newObject.Values[i] = this.Values[i];
-                    }
-                }
-                return newObject;
-            }
         }
 
         public class QueryResponse
@@ -186,51 +143,51 @@ namespace PxWebComparer.Model
             [JsonProperty("format")]
             public string Format { get; set; }
 
-            [JsonProperty("params")]
-            public QueryParam[] Params { get; set; }
+        [JsonProperty("params")]
+        public QueryParam[] Params { get; set; }
 
-            public QueryParam GetParam(string key)
-            {
-                if (Params != null)
-                    return Params.SingleOrDefault(p => p.Key.ToLower() == key);
-                return null;
-            }
+        //public QueryParam GetParam(string key)
+        //{
+        //    if (Params != null)
+        //        return Params.SingleOrDefault(p => p.Key.ToLower() == key);
+        //    return null;
+        //}
 
-            public string GetParamString(string key)
-            {
-                QueryParam param = GetParam(key);
-                if (param != null)
-                    return param.Value;
-                return null;
-            }
+        //public string GetParamString(string key)
+        //{
+        //    QueryParam param = GetParam(key);
+        //    if (param != null)
+        //        return param.Value;
+        //    return null;
+        //}
 
-            public int? GetParamInt(string key)
-            {
-                int iOut;
-                if (int.TryParse(GetParamString(key), out iOut))
-                    return iOut;
-                return null;
-            }
-            public QueryResponse CreateCopy()
-            {
-                QueryResponse newObject;
-                newObject = (QueryResponse)this.MemberwiseClone();
+        //public int? GetParamInt(string key)
+        //{
+        //    int iOut;
+        //    if (int.TryParse(GetParamString(key), out iOut))
+        //        return iOut;
+        //    return null;
+        //}
+        //public QueryResponse CreateCopy()
+        //{
+        //    QueryResponse newObject;
+        //    newObject = (QueryResponse)this.MemberwiseClone();
 
-                if (this.Params != null)
-                {
-                    newObject.Params = new QueryParam[this.Params.Length];
+        //    if (this.Params != null)
+        //    {
+        //        newObject.Params = new QueryParam[this.Params.Length];
 
-                    for (int i = 0; i < this.Params.Length; i++)
-                    {
-                        if (this.Params[i] != null)
-                        {
-                            newObject.Params[i] = this.Params[i].CreateCopy();
-                        }
-                    }
-                }
-                return newObject;
-            }
-        }
+        //        for (int i = 0; i < this.Params.Length; i++)
+        //        {
+        //            if (this.Params[i] != null)
+        //            {
+        //                newObject.Params[i] = this.Params[i].CreateCopy();
+        //            }
+        //        }
+        //    }
+        //    return newObject;
+        //}
+    }
 
         public class QueryParam
         {
@@ -249,6 +206,6 @@ namespace PxWebComparer.Model
             }
         }
 
-    }
+    
 
 }
