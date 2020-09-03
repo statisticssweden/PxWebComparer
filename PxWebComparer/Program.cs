@@ -18,7 +18,7 @@ namespace PxApiComparer
             try
             {
                 
-                handler.CompareSavedQueryMetaPxsq();
+                //handler.CompareSavedQueryMetaPxsq();
                 //handler.CompareSavedQueryMetaDatabase();
                 //handler.Compare();
                 handler.CompareApi();
@@ -31,7 +31,7 @@ namespace PxApiComparer
             
             catch (Exception e)
             {
-                throw;
+                MessageBox.Show(e.Message);
             }
         }
     }

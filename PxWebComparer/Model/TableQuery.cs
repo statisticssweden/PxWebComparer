@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DocumentFormat.OpenXml.Drawing.Charts;
+﻿using Newtonsoft.Json;
 
 namespace PxWebComparer.Model
 {
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Newtonsoft.Json;
-   // using PCAxis.Paxiom;
-
    public class TableQuery
         {
             [JsonProperty("query")]
@@ -128,83 +118,9 @@ namespace PxWebComparer.Model
            
         //}
 
-        public class QuerySelection
-        {
-            [JsonProperty("filter")]
-            public string Filter { get; set; }
+       
 
-            [JsonProperty("values")]
-            public string[] Values { get; set; }
-
-        }
-
-        public class QueryResponse
-        {
-            [JsonProperty("format")]
-            public string Format { get; set; }
-
-        [JsonProperty("params")]
-        public QueryParam[] Params { get; set; }
-
-        //public QueryParam GetParam(string key)
-        //{
-        //    if (Params != null)
-        //        return Params.SingleOrDefault(p => p.Key.ToLower() == key);
-        //    return null;
-        //}
-
-        //public string GetParamString(string key)
-        //{
-        //    QueryParam param = GetParam(key);
-        //    if (param != null)
-        //        return param.Value;
-        //    return null;
-        //}
-
-        //public int? GetParamInt(string key)
-        //{
-        //    int iOut;
-        //    if (int.TryParse(GetParamString(key), out iOut))
-        //        return iOut;
-        //    return null;
-        //}
-        //public QueryResponse CreateCopy()
-        //{
-        //    QueryResponse newObject;
-        //    newObject = (QueryResponse)this.MemberwiseClone();
-
-        //    if (this.Params != null)
-        //    {
-        //        newObject.Params = new QueryParam[this.Params.Length];
-
-        //        for (int i = 0; i < this.Params.Length; i++)
-        //        {
-        //            if (this.Params[i] != null)
-        //            {
-        //                newObject.Params[i] = this.Params[i].CreateCopy();
-        //            }
-        //        }
-        //    }
-        //    return newObject;
-        //}
-    }
-
-        public class QueryParam
-        {
-            [JsonProperty("key")]
-            public string Key { get; set; }
-
-            [JsonProperty("value")]
-            public string Value { get; set; }
-
-            public QueryParam CreateCopy()
-            {
-                QueryParam newObject;
-                newObject = (QueryParam)this.MemberwiseClone();
-
-                return newObject;
-            }
-        }
+       
 
     
 

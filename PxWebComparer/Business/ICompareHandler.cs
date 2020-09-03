@@ -10,7 +10,9 @@ namespace PxWebComparer.Business
         void CompareSavedQueryMetaPxsq();
         bool CompareSavedQueryResults(string file1, string file2);
         void CompareApi();
-        TableQuery GetTableQuery();
+        //ableQuery GetTableQuery();
+        TableQuery MapToTableQuery(MetaTable metaTable, string format);
         List<CompareResultModel> GetResults();
+       // void Compare
     }
 }
