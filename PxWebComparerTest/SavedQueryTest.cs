@@ -1,5 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using PxWebComparer.Services;
 
 namespace PxWebComparerTest
@@ -17,7 +16,7 @@ namespace PxWebComparerTest
 
             SavedQueryService savedQueryService = new SavedQueryService();
 
-            var savedQueryList = savedQueryService.GetSavedQuery(string.Empty);
+            var savedQueryList = savedQueryService.GetService(string.Empty);
         }
     }
 }

@@ -15,13 +15,13 @@ public class Query
     [JsonProperty("selection")]
     public QuerySelection Selection { get; set; }
 
-    public Query CreateCopy()
-    {
-        Query newObject;
-        newObject = (Query)this.MemberwiseClone();
+    //public Query CreateCopy()
+    //{
+    //    Query newObject;
+    //    newObject = (Query)this.MemberwiseClone();
 
-        newObject.Selection = this.Selection.CreateCopy();
+    //    newObject.Selection = this.Selection.CreateCopy();
 
-        return newObject;
-    }
+    //    return newObject;
+    //}
 }

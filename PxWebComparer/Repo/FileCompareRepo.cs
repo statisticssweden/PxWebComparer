@@ -12,20 +12,24 @@ namespace PxWebComparer.Repo
     {
         public void CreateFolder(string path)
         {
-            throw new System.NotImplementedException();
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
         }
 
         public void DeleteAllFilesInFolder(string path)
         {
-            System.IO.DirectoryInfo di = new DirectoryInfo(path);
-            foreach (FileInfo file in di.GetFiles())
+            if (Directory.Exists(path))
             {
-                file.Delete();
-            }
+                DirectoryInfo di = new DirectoryInfo(path);
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
 
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
             }
         }
         
@@ -73,7 +77,7 @@ namespace PxWebComparer.Repo
             {
                 return JsonConvert.DeserializeObject<SavedQuery>(File.ReadAllText(path));
             }
-            catch (FileNotFoundException e )
+            catch (FileNotFoundException)
             {
                 return null;
             }
