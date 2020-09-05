@@ -39,20 +39,22 @@
             this.tabPageSavedQueryMeta = new System.Windows.Forms.TabPage();
             this.listViewQueryResult = new System.Windows.Forms.ListView();
             this.tabPageSavedQueryResult = new System.Windows.Forms.TabPage();
-            this.comboBoxSavedQueryMeta = new System.Windows.Forms.ComboBox();
-            this.comboBoxSavedQueryResult = new System.Windows.Forms.ComboBox();
+            this.tabPageApi = new System.Windows.Forms.TabPage();
+            this.listViewApiResult = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tabPageStart.SuspendLayout();
             this.tabPageSavedQueryMeta.SuspendLayout();
             this.tabPageSavedQueryResult.SuspendLayout();
+            this.tabPageApi.SuspendLayout();
             this.SuspendLayout();
             // 
             // listViewResult
             // 
+            this.listViewResult.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewResult.HideSelection = false;
-            this.listViewResult.Location = new System.Drawing.Point(3, 67);
+            this.listViewResult.Location = new System.Drawing.Point(3, 3);
             this.listViewResult.Name = "listViewResult";
-            this.listViewResult.Size = new System.Drawing.Size(1086, 423);
+            this.listViewResult.Size = new System.Drawing.Size(1089, 492);
             this.listViewResult.TabIndex = 0;
             this.listViewResult.UseCompatibleStateImageBehavior = false;
             // 
@@ -61,13 +63,13 @@
             this.tabControl.Controls.Add(this.tabPageStart);
             this.tabControl.Controls.Add(this.tabPageSavedQueryMeta);
             this.tabControl.Controls.Add(this.tabPageSavedQueryResult);
+            this.tabControl.Controls.Add(this.tabPageApi);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 1;
+            this.tabControl.SelectedIndex = 2;
             this.tabControl.Size = new System.Drawing.Size(1103, 531);
             this.tabControl.TabIndex = 1;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPageStart
             // 
@@ -137,11 +139,10 @@
             // 
             // tabPageSavedQueryMeta
             // 
-            this.tabPageSavedQueryMeta.Controls.Add(this.comboBoxSavedQueryMeta);
             this.tabPageSavedQueryMeta.Controls.Add(this.listViewQueryResult);
             this.tabPageSavedQueryMeta.Location = new System.Drawing.Point(4, 29);
             this.tabPageSavedQueryMeta.Name = "tabPageSavedQueryMeta";
-            this.tabPageSavedQueryMeta.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageSavedQueryMeta.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageSavedQueryMeta.Size = new System.Drawing.Size(1095, 498);
             this.tabPageSavedQueryMeta.TabIndex = 1;
             this.tabPageSavedQueryMeta.Text = "Saved query meta ";
@@ -149,40 +150,43 @@
             // 
             // listViewQueryResult
             // 
+            this.listViewQueryResult.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewQueryResult.HideSelection = false;
-            this.listViewQueryResult.Location = new System.Drawing.Point(3, 56);
+            this.listViewQueryResult.Location = new System.Drawing.Point(3, 3);
             this.listViewQueryResult.Name = "listViewQueryResult";
-            this.listViewQueryResult.Size = new System.Drawing.Size(1086, 434);
+            this.listViewQueryResult.Size = new System.Drawing.Size(1089, 492);
             this.listViewQueryResult.TabIndex = 0;
             this.listViewQueryResult.UseCompatibleStateImageBehavior = false;
             // 
             // tabPageSavedQueryResult
             // 
-            this.tabPageSavedQueryResult.Controls.Add(this.comboBoxSavedQueryResult);
             this.tabPageSavedQueryResult.Controls.Add(this.listViewResult);
             this.tabPageSavedQueryResult.Location = new System.Drawing.Point(4, 29);
             this.tabPageSavedQueryResult.Name = "tabPageSavedQueryResult";
-            this.tabPageSavedQueryResult.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageSavedQueryResult.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageSavedQueryResult.Size = new System.Drawing.Size(1095, 498);
             this.tabPageSavedQueryResult.TabIndex = 0;
             this.tabPageSavedQueryResult.Text = "Saved query result";
             this.tabPageSavedQueryResult.UseVisualStyleBackColor = true;
             // 
-            // comboBoxSavedQueryMeta
+            // tabPageApi
             // 
-            this.comboBoxSavedQueryMeta.FormattingEnabled = true;
-            this.comboBoxSavedQueryMeta.Location = new System.Drawing.Point(9, 16);
-            this.comboBoxSavedQueryMeta.Name = "comboBoxSavedQueryMeta";
-            this.comboBoxSavedQueryMeta.Size = new System.Drawing.Size(151, 28);
-            this.comboBoxSavedQueryMeta.TabIndex = 1;
+            this.tabPageApi.Controls.Add(this.listViewApiResult);
+            this.tabPageApi.Location = new System.Drawing.Point(4, 29);
+            this.tabPageApi.Name = "tabPageApi";
+            this.tabPageApi.Size = new System.Drawing.Size(1095, 498);
+            this.tabPageApi.TabIndex = 3;
+            this.tabPageApi.Text = "Api result";
             // 
-            // comboBoxSavedQueryResult
+            // listViewApiResult
             // 
-            this.comboBoxSavedQueryResult.FormattingEnabled = true;
-            this.comboBoxSavedQueryResult.Location = new System.Drawing.Point(9, 25);
-            this.comboBoxSavedQueryResult.Name = "comboBoxSavedQueryResult";
-            this.comboBoxSavedQueryResult.Size = new System.Drawing.Size(151, 28);
-            this.comboBoxSavedQueryResult.TabIndex = 1;
+            this.listViewApiResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewApiResult.HideSelection = false;
+            this.listViewApiResult.Location = new System.Drawing.Point(0, 0);
+            this.listViewApiResult.Name = "listViewApiResult";
+            this.listViewApiResult.Size = new System.Drawing.Size(1095, 498);
+            this.listViewApiResult.TabIndex = 0;
+            this.listViewApiResult.UseCompatibleStateImageBehavior = false;
             // 
             // ResultForm
             // 
@@ -198,6 +202,7 @@
             this.tabPageStart.PerformLayout();
             this.tabPageSavedQueryMeta.ResumeLayout(false);
             this.tabPageSavedQueryResult.ResumeLayout(false);
+            this.tabPageApi.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -215,7 +220,7 @@
         private System.Windows.Forms.RadioButton radioButtonFile;
         private System.Windows.Forms.Button buttonCompareMeta;
         private System.Windows.Forms.Button buttonAPI;
-        private System.Windows.Forms.ComboBox comboBoxSavedQueryMeta;
-        private System.Windows.Forms.ComboBox comboBoxSavedQueryResult;
+        private System.Windows.Forms.TabPage tabPageApi;
+        private System.Windows.Forms.ListView listViewApiResult;
     }
 }

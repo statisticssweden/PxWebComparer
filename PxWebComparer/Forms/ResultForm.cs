@@ -27,6 +27,7 @@ namespace PxWebComparer.Forms
         {
             LoadData();
             LoadSavedQueryData();
+            LoadApiData();
         }
 
 
@@ -66,6 +67,36 @@ namespace PxWebComparer.Forms
                 lvi.SubItems.Add(result.json.ToString());
                 
                 listViewResult.Items.Add(lvi);
+            }
+        }
+        
+        private void LoadApiData()
+        {
+            listViewApiResult.Clear();
+            var results = _compareHandler.GetApiResults();
+            listViewApiResult.View = View.Details;
+            _ = listViewApiResult.Columns.Add("SQ id", 400, HorizontalAlignment.Left);
+
+            var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>().Where(x => x == OutputFormat.px || x == OutputFormat.xlsx || x == OutputFormat.csv || x == OutputFormat.json);
+
+
+//            var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>();
+            foreach (var output in outputFormats)
+            {
+                //_ = listViewApiResult.Columns.Add(output.ToString(), (output.ToString().Length * 7) + 25, HorizontalAlignment.Left);
+                _ = listViewApiResult.Columns.Add(output.ToString(), 75, HorizontalAlignment.Left);
+            }
+
+            foreach (var result in results)
+            {
+                var lvi = new ListViewItem();
+                lvi.Text = result.SavedQuery.ToString();
+                lvi.SubItems.Add(result.px.ToString());
+                lvi.SubItems.Add(result.xlsx.ToString());
+                lvi.SubItems.Add(result.csv.ToString());
+                lvi.SubItems.Add(result.json.ToString());
+
+                listViewApiResult.Items.Add(lvi);
             }
         }
 
@@ -119,22 +150,9 @@ namespace PxWebComparer.Forms
         private void buttonAPI_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-
             _compareHandler.CompareApi();
-
-            //if (radioButtonFile.Checked)
-            //    _compareHandler.CompareSavedQueryMetaPxsq();
-            //else
-            //    _compareHandler.CompareSavedQueryMetaDatabase();
-
-            //LoadSavedQueryData();
-
+            LoadApiData();
             Cursor.Current = Cursors.Default;
         }
-
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-    }
+   }
 }
