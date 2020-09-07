@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PxWebComparer.Model;
 
 namespace PxWebComparer.Repo
@@ -38,29 +36,55 @@ namespace PxWebComparer.Repo
             if (File.Exists(fileName))
                 File.Delete(fileName);
         }
-
-        public void SaveToFile(CompareResultModel compareResultModel, string path)
+        
+        public List<T> GetReduceList<T>(List<T> list)
         {
-            var json = File.ReadAllText(path);
-            var compareResults = JsonConvert.DeserializeObject<CompareResultModel>(json);
-            File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
+            var returnList = new List<T>();
+
+            if (list.Count() > 2)
+            {
+                returnList.Add(list.First());
+                returnList.Add(list.ElementAt(list.Count() / 2));
+                returnList.Add(list.Last());
+            }
+            else
+            {
+                foreach (var listItem in list)
+                {
+                    returnList.Add(listItem);
+                }
+            }
+
+            return returnList;
         }
 
-        public void SaveToFile(List<CompareResultModel> compareResultModelList, string path)
+
+        public void SaveToFile<T>(List<T> compareResultModelList, string path)
         {
             File.WriteAllText(path, JsonConvert.SerializeObject(compareResultModelList));
         }
 
-        public void SaveToFile(List<SavedQueryMetaCompareResultModel> savedQueryMetaCompareResultModel, string path)
+        public void DeleteFirstRowInFile(string path)
         {
-            File.WriteAllText(path, JsonConvert.SerializeObject(savedQueryMetaCompareResultModel));
+            var lines = File.ReadAllLines(path);
+            File.WriteAllLines(path, lines.Skip(1).ToArray());
         }
 
-        public List<CompareResultModel> ReadFromFile(string path)
+        public List<T> ReadFromFile<T>(string path)
         {
-            var json = File.ReadAllText(path);
-           
-            return JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
+            try
+            {
+                var json = File.ReadAllText(path);
+
+                return JsonConvert.DeserializeObject<List<T>>(json);
+            }
+            catch (IOException)
+            {
+                return null;
+            }
+            
+
+
         }
 
         public List<SavedQueryMetaCompareResultModel> ReadFromSaveCompareResultModels(string path)

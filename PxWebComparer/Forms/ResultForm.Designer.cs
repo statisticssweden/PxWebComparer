@@ -41,6 +41,10 @@
             this.tabPageSavedQueryResult = new System.Windows.Forms.TabPage();
             this.tabPageApi = new System.Windows.Forms.TabPage();
             this.listViewApiResult = new System.Windows.Forms.ListView();
+            this.textBoxLanguage = new System.Windows.Forms.TextBox();
+            this.textBoxDatabase = new System.Windows.Forms.TextBox();
+            this.labelLanguage = new System.Windows.Forms.Label();
+            this.labelDatabase = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageStart.SuspendLayout();
             this.tabPageSavedQueryMeta.SuspendLayout();
@@ -73,6 +77,10 @@
             // 
             // tabPageStart
             // 
+            this.tabPageStart.Controls.Add(this.labelDatabase);
+            this.tabPageStart.Controls.Add(this.labelLanguage);
+            this.tabPageStart.Controls.Add(this.textBoxDatabase);
+            this.tabPageStart.Controls.Add(this.textBoxLanguage);
             this.tabPageStart.Controls.Add(this.buttonAPI);
             this.tabPageStart.Controls.Add(this.buttonResults);
             this.tabPageStart.Controls.Add(this.radioButtonDatabase);
@@ -188,6 +196,38 @@
             this.listViewApiResult.TabIndex = 0;
             this.listViewApiResult.UseCompatibleStateImageBehavior = false;
             // 
+            // textBoxLanguage
+            // 
+            this.textBoxLanguage.Location = new System.Drawing.Point(23, 363);
+            this.textBoxLanguage.Name = "textBoxLanguage";
+            this.textBoxLanguage.Size = new System.Drawing.Size(125, 27);
+            this.textBoxLanguage.TabIndex = 5;
+            // 
+            // textBoxDatabase
+            // 
+            this.textBoxDatabase.Location = new System.Drawing.Point(23, 416);
+            this.textBoxDatabase.Name = "textBoxDatabase";
+            this.textBoxDatabase.Size = new System.Drawing.Size(125, 27);
+            this.textBoxDatabase.TabIndex = 6;
+            // 
+            // labelLanguage
+            // 
+            this.labelLanguage.AutoSize = true;
+            this.labelLanguage.Location = new System.Drawing.Point(23, 340);
+            this.labelLanguage.Name = "labelLanguage";
+            this.labelLanguage.Size = new System.Drawing.Size(74, 20);
+            this.labelLanguage.TabIndex = 7;
+            this.labelLanguage.Text = "Language";
+            // 
+            // labelDatabase
+            // 
+            this.labelDatabase.AutoSize = true;
+            this.labelDatabase.Location = new System.Drawing.Point(23, 393);
+            this.labelDatabase.Name = "labelDatabase";
+            this.labelDatabase.Size = new System.Drawing.Size(72, 20);
+            this.labelDatabase.TabIndex = 8;
+            this.labelDatabase.Text = "Database";
+            // 
             // ResultForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -222,5 +262,9 @@
         private System.Windows.Forms.Button buttonAPI;
         private System.Windows.Forms.TabPage tabPageApi;
         private System.Windows.Forms.ListView listViewApiResult;
+        private System.Windows.Forms.Label labelDatabase;
+        private System.Windows.Forms.Label labelLanguage;
+        private System.Windows.Forms.TextBox textBoxDatabase;
+        private System.Windows.Forms.TextBox textBoxLanguage;
     }
 }
