@@ -21,7 +21,7 @@ namespace PxApiComparer
                 //handler.CompareSavedQueryMetaPxsq();
                 //handler.CompareSavedQueryMetaDatabase();
                 //handler.Compare();
-               // handler.CompareApi();
+                //handler.CompareApi();
                             
                 Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();

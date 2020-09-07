@@ -39,28 +39,74 @@ namespace PxWebComparer.Repo
                 File.Delete(fileName);
         }
 
-        public void SaveToFile(CompareResultModel compareResultModel, string path)
+        //public void SaveToFile(CompareResultModel compareResultModel, string path)
+        //{
+        //    var json = File.ReadAllText(path);
+        //    var compareResults = JsonConvert.DeserializeObject<CompareResultModel>(json);
+        //    File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
+        //}
+
+        //public void SaveToFile<T>(T model , string path)
+        //{
+        //    var json = File.ReadAllText(path);
+        //    var compareResults = JsonConvert.DeserializeObject<T>(json);
+        //    File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
+        //}
+
+
+
+        public List<T> GetReduceList<T>(List<T> list)
         {
-            var json = File.ReadAllText(path);
-            var compareResults = JsonConvert.DeserializeObject<CompareResultModel>(json);
-            File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
+            var returnList = new List<T>();
+
+            if (list.Count() > 2)
+            {
+                returnList.Add(list.First());
+                returnList.Add(list.ElementAt(list.Count() / 2));
+                returnList.Add(list.Last());
+            }
+            else
+            {
+                foreach (var listItem in list)
+                {
+                    returnList.Add(listItem);
+                }
+            }
+
+            return returnList;
         }
 
-        public void SaveToFile(List<CompareResultModel> compareResultModelList, string path)
+
+        public void SaveToFile<T>(List<T> compareResultModelList, string path)
         {
             File.WriteAllText(path, JsonConvert.SerializeObject(compareResultModelList));
         }
+        
+        //public void SaveToFile(List<CompareResultModel> compareResultModelList, string path)
+        //{
+        //    File.WriteAllText(path, JsonConvert.SerializeObject(compareResultModelList));
+        //}
 
-        public void SaveToFile(List<SavedQueryMetaCompareResultModel> savedQueryMetaCompareResultModel, string path)
-        {
-            File.WriteAllText(path, JsonConvert.SerializeObject(savedQueryMetaCompareResultModel));
-        }
+        //public void SaveToFile(List<SavedQueryMetaCompareResultModel> savedQueryMetaCompareResultModel, string path)
+        //{
+        //    File.WriteAllText(path, JsonConvert.SerializeObject(savedQueryMetaCompareResultModel));
+        //}
 
-        public List<CompareResultModel> ReadFromFile(string path)
+        public List<T> ReadFromFile<T>(string path)
         {
-            var json = File.ReadAllText(path);
-           
-            return JsonConvert.DeserializeObject<List<CompareResultModel>>(json);
+            try
+            {
+                var json = File.ReadAllText(path);
+
+                return JsonConvert.DeserializeObject<List<T>>(json);
+            }
+            catch (IOException)
+            {
+                return null;
+            }
+            
+
+
         }
 
         public List<SavedQueryMetaCompareResultModel> ReadFromSaveCompareResultModels(string path)

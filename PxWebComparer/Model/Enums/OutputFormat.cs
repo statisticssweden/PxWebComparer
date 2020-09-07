@@ -15,6 +15,7 @@
             ,csv_semicolon
             ,csv_semicolonhead
             ,json_stat
+            ,json_stat2
             ,html5_table
             ,relational_table
             ,json
@@ -24,8 +25,11 @@
         public enum OutputFormatApi
         {
             px
-            , xlsx
-            , csv
-            , json
+            ,xlsx
+            ,csv
+            ,json
+            ,json_stat    
+            ,json_stat2
+            ,sdmx
         }
 }

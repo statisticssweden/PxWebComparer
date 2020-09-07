@@ -19,6 +19,7 @@ namespace PxWebComparer.Model
         public bool? csv_semicolon { get; set; }
         public bool? csv_semicolonhead { get; set; }
         public bool? json_stat { get; set; }
+        public bool? json_stat2 { get; set; }
         public bool? relational_table { get; set; }
         public bool? html5_table { get; set; }
         public bool? json { get; set; }
@@ -69,6 +70,9 @@ namespace PxWebComparer.Model
                 case OutputFormat.json_stat:
                     json_stat = result;
                     break;
+                case OutputFormat.json_stat2:
+                    json_stat2 = result;
+                    break;
                 case OutputFormat.html5_table:
                     html5_table = result;
                     break;
@@ -81,9 +85,9 @@ namespace PxWebComparer.Model
         public override string ToString()
         {
             return string.Format(
-                "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}",
+                "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16},{17}",
                 SavedQuery, px, xlsx, xlsx_doublecolumn, csv, csv_tab, csv_tabhead, csv_comma, csv_commahead,
-                csv_space, csv_spacehead, csv_semicolon, csv_semicolonhead, json_stat, relational_table, html5_table,
+                csv_space, csv_spacehead, csv_semicolon, csv_semicolonhead, json_stat, json_stat2, relational_table, html5_table,
                 json);
         }
     }

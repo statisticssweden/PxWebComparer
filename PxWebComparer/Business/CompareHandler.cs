@@ -65,7 +65,7 @@ namespace PxWebComparer.Business
                                 $"{query}_{outputFormat}",
                                 "xlsx", $"{resultFolder2}\\{query}\\");
 
-                            Thread.Sleep(1000);
+                            Thread.Sleep(5000);
 
                             if (saveQuery1 && saveQuery2)
                             {
@@ -88,7 +88,7 @@ namespace PxWebComparer.Business
 
                             var res2 = _savedQueryService.GetService($"{serverAddress2}{query}.{outputFormat}");
 
-                            Thread.Sleep(1000);
+                            Thread.Sleep(5000);
 
                             if (res1 != null && res2 != null)
                             {
@@ -117,7 +117,7 @@ namespace PxWebComparer.Business
 
                 fileRepo.DeleteFile(compareResultFile);
                 fileRepo.SaveToFile(compareResultModelList, compareResultFile);
-                var resultFile = fileRepo.ReadFromFile(compareResultFile);
+                var resultFile = fileRepo.ReadFromFile<CompareResultModel>(compareResultFile);
             }
         }
 
@@ -181,7 +181,7 @@ namespace PxWebComparer.Business
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareSavedQueryResultFile");
 
             var pxsqFolder1 = _appSettingsHandler.ReadSetting("SQFileFormat1");
-            var pxsqFolder2 = _appSettingsHandler.ReadSetting("SQFileFormat1");
+            var pxsqFolder2 = _appSettingsHandler.ReadSetting("SQFileFormat2");
 
             var resultFolder1 = _appSettingsHandler.ReadSetting("ResultFolder1");
             var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2");
@@ -228,8 +228,7 @@ namespace PxWebComparer.Business
             fileRepo.DeleteFile(compareResultFile);
             fileRepo.SaveToFile(savedQueryMetaCompareResultModel, compareResultFile);
         }
-
-
+        
         //Unittest to this one
         public string SavedQueryString(SavedQuery sq)
         {
@@ -353,7 +352,7 @@ namespace PxWebComparer.Business
             return returnList;
         }
 
-        public void CompareApi()
+        public void CompareApi(string language, string database)
         {
 
             // get url for api site 1
@@ -367,7 +366,7 @@ namespace PxWebComparer.Business
             var resultFolder2 = _appSettingsHandler.ReadSetting("ResultFolder2") + "/Api/";
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareApiResultFile");
             var fileRepo = new FileCompareRepo();
-            var compareResultModelList = new List<CompareResultModel>();
+            var compareResultModelList = new List<CompareResultApiModel>();
 
 
             fileRepo.DeleteAllFilesInFolder(resultFolder1);
@@ -375,9 +374,11 @@ namespace PxWebComparer.Business
 
             string qStringGlobal = string.Empty;
 
-            qStringGlobal = $"api/v1/sv";
+            qStringGlobal = _appSettingsHandler.ReadSetting("WebApiRootPrefix");
 
-            qStringGlobal += $"/ssd";
+            qStringGlobal += language;
+
+            qStringGlobal += $"/{database}";
 
             var menuItems =
                 JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(
@@ -395,8 +396,11 @@ namespace PxWebComparer.Business
 
                 string qString = string.Empty;
 
-                qString = $"api/v1/sv";
-                qString += $"/ssd";
+                qString = _appSettingsHandler.ReadSetting("WebApiRootPrefix");
+
+                qString += language;
+
+                qString += $"/{database}";
 
                 qString += $"/{menuItem.Id}";
                 var level1Items =
@@ -433,10 +437,10 @@ namespace PxWebComparer.Business
             fileRepo.DeleteFile(compareResultFile);
             fileRepo.SaveToFile(compareResultModelList, compareResultFile);
            
-            var resultFile = fileRepo.ReadFromFile(compareResultFile);
+            var resultFile = fileRepo.ReadFromFile<CompareResultApiModel>(compareResultFile);
         }
 
-        private List<CompareResultModel> CompareApi(IEnumerable<MenuItem> level3Items, string level2qString, List<CompareResultModel> compareResultModelList)
+        public List<CompareResultApiModel> CompareApi(IEnumerable<MenuItem> level3Items, string level2qString, List<CompareResultApiModel> compareResultModelList)
         {
             var serverAddress1 = _appSettingsHandler.ReadSetting("WebApiAddress1");
             // get url for api site 2
@@ -458,24 +462,23 @@ namespace PxWebComparer.Business
                 {
                     metaTableResult = JsonConvert.DeserializeObject<MetaTable>(queryResult1);
 
-                    var compareResultModel = new CompareResultModel {SavedQuery = level3Item.Id};
+                    var compareResultModel = new CompareResultApiModel() {TableId= level3Item.Id};
 
                     //var outputFormats = Enum.GetValues(typeof(OutputFormatApi)).Cast<OutputFormatApi>();
 
-                    var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>().Where( x => x == OutputFormat.px || x == OutputFormat.xlsx || x == OutputFormat.csv || x == OutputFormat.json);
-
+                    var outputFormats = Enum.GetValues(typeof(OutputFormatApi)).Cast<OutputFormatApi>();
 
                     fileRepo.CreateFolder($"{resultFolder1}/{level3Item.Id}");
                     fileRepo.CreateFolder($"{resultFolder2}/{level3Item.Id}");
 
                     foreach (var outputFormat in outputFormats)
                     {
-                        var tableQuery = MapToTableQuery(metaTableResult, outputFormat.ToString());
+                        var tableQuery = MapToTableQuery(metaTableResult, outputFormat.ToString().Replace("_","-"));
 
                           bool? result;
 
 
-                        if (outputFormat == OutputFormat.xlsx)
+                        if (outputFormat == OutputFormatApi.xlsx)
                         {
                             bool res1;
                             bool res2;
@@ -513,7 +516,7 @@ namespace PxWebComparer.Business
                             
                             var res2 = _savedQueryService.PostService($"{serverAddress2 + lev3qString}", tableQuery);
 
-                            Thread.Sleep(1000);
+                            Thread.Sleep(5000);
 
                             if (res1 != null && res2 != null)
                             {
@@ -540,8 +543,7 @@ namespace PxWebComparer.Business
             }
             return compareResultModelList;
         }
-
-
+        
         public TableQuery MapToTableQuery(MetaTable metaTable, string format)
         {
             var tableQuery = new TableQuery();
@@ -596,14 +598,14 @@ namespace PxWebComparer.Business
         {
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareResultFile");
             var fileRepo = new FileCompareRepo();
-            return fileRepo.ReadFromFile(compareResultFile);
+            return fileRepo.ReadFromFile<CompareResultModel>(compareResultFile);
         }
 
-        public List<CompareResultModel> GetApiResults()
+        public List<CompareResultApiModel> GetApiResults()
         {
             var compareResultFile = _appSettingsHandler.ReadSetting("CompareApiResultFile");
             var fileRepo = new FileCompareRepo();
-            return fileRepo.ReadFromFile(compareResultFile);
+            return fileRepo.ReadFromFile<CompareResultApiModel>(compareResultFile);
         }
 
         public List<SavedQueryMetaCompareResultModel> GetSavedQueryResults()

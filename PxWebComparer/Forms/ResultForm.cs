@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using DocumentFormat.OpenXml.Wordprocessing;
 using PxWebComparer.Business;
 using PxWebComparer.Model.Enums;
+using TextBox = System.Windows.Forms.TextBox;
+using View = System.Windows.Forms.View;
 
 namespace PxWebComparer.Forms
 {
@@ -21,6 +19,7 @@ namespace PxWebComparer.Forms
             _compareHandler = new CompareHandler();
             radioButtonFile.Checked = true;
             FillForms();
+            tabControl.SelectedIndex = 0;
         }
 
         private void FillForms()
@@ -35,6 +34,10 @@ namespace PxWebComparer.Forms
         {
             listViewResult.Clear();
             var results = _compareHandler.GetResults();
+
+            if (results == null)
+                return;
+
             listViewResult.View = View.Details;
             _ = listViewResult.Columns.Add("SQ id", 400, HorizontalAlignment.Left);
 
@@ -62,6 +65,7 @@ namespace PxWebComparer.Forms
                 lvi.SubItems.Add(result.csv_semicolon.ToString());
                 lvi.SubItems.Add(result.csv_semicolonhead.ToString());
                 lvi.SubItems.Add(result.json_stat.ToString());
+                lvi.SubItems.Add(result.json_stat2.ToString());
                 lvi.SubItems.Add(result.html5_table.ToString());
                 lvi.SubItems.Add(result.relational_table.ToString());
                 lvi.SubItems.Add(result.json.ToString());
@@ -74,13 +78,15 @@ namespace PxWebComparer.Forms
         {
             listViewApiResult.Clear();
             var results = _compareHandler.GetApiResults();
+
+            if (results == null)
+                return;
+
+
             listViewApiResult.View = View.Details;
             _ = listViewApiResult.Columns.Add("SQ id", 400, HorizontalAlignment.Left);
 
-            var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>().Where(x => x == OutputFormat.px || x == OutputFormat.xlsx || x == OutputFormat.csv || x == OutputFormat.json);
-
-
-//            var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>();
+            var outputFormats = Enum.GetValues(typeof(OutputFormatApi)).Cast<OutputFormatApi>();
             foreach (var output in outputFormats)
             {
                 //_ = listViewApiResult.Columns.Add(output.ToString(), (output.ToString().Length * 7) + 25, HorizontalAlignment.Left);
@@ -90,11 +96,16 @@ namespace PxWebComparer.Forms
             foreach (var result in results)
             {
                 var lvi = new ListViewItem();
-                lvi.Text = result.SavedQuery.ToString();
+                lvi.Text = result.TableId;
                 lvi.SubItems.Add(result.px.ToString());
                 lvi.SubItems.Add(result.xlsx.ToString());
                 lvi.SubItems.Add(result.csv.ToString());
                 lvi.SubItems.Add(result.json.ToString());
+                lvi.SubItems.Add(result.json_stat.ToString());
+                lvi.SubItems.Add(result.json_stat2.ToString());
+                lvi.SubItems.Add(result.sdmx.ToString());
+
+
 
                 listViewApiResult.Items.Add(lvi);
             }
@@ -104,8 +115,13 @@ namespace PxWebComparer.Forms
         private void LoadSavedQueryData()
         {
             listViewQueryResult.Clear();
+            
             var results = _compareHandler.GetSavedQueryResults();
-           
+
+            if (results == null)
+                return;
+
+
             listViewQueryResult.View = View.Details;
             
             listViewQueryResult.View = View.Details;
@@ -150,7 +166,14 @@ namespace PxWebComparer.Forms
         private void buttonAPI_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            _compareHandler.CompareApi();
+
+            if (string.IsNullOrEmpty(textBoxDatabase.Text) || string.IsNullOrEmpty(textBoxLanguage.Text))
+            {
+                MessageBox.Show("Language and database must be provided");
+                return;
+            }
+
+            _compareHandler.CompareApi(textBoxLanguage.Text, textBoxDatabase.Text);
             LoadApiData();
             Cursor.Current = Cursors.Default;
         }
