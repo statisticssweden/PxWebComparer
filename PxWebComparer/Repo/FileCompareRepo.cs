@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PxWebComparer.Model;
 
 namespace PxWebComparer.Repo
@@ -38,23 +36,7 @@ namespace PxWebComparer.Repo
             if (File.Exists(fileName))
                 File.Delete(fileName);
         }
-
-        //public void SaveToFile(CompareResultModel compareResultModel, string path)
-        //{
-        //    var json = File.ReadAllText(path);
-        //    var compareResults = JsonConvert.DeserializeObject<CompareResultModel>(json);
-        //    File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
-        //}
-
-        //public void SaveToFile<T>(T model , string path)
-        //{
-        //    var json = File.ReadAllText(path);
-        //    var compareResults = JsonConvert.DeserializeObject<T>(json);
-        //    File.WriteAllText(path, JsonConvert.SerializeObject(compareResults));
-        //}
-
-
-
+        
         public List<T> GetReduceList<T>(List<T> list)
         {
             var returnList = new List<T>();
@@ -81,16 +63,12 @@ namespace PxWebComparer.Repo
         {
             File.WriteAllText(path, JsonConvert.SerializeObject(compareResultModelList));
         }
-        
-        //public void SaveToFile(List<CompareResultModel> compareResultModelList, string path)
-        //{
-        //    File.WriteAllText(path, JsonConvert.SerializeObject(compareResultModelList));
-        //}
 
-        //public void SaveToFile(List<SavedQueryMetaCompareResultModel> savedQueryMetaCompareResultModel, string path)
-        //{
-        //    File.WriteAllText(path, JsonConvert.SerializeObject(savedQueryMetaCompareResultModel));
-        //}
+        public void DeleteFirstRowInFile(string path)
+        {
+            var lines = File.ReadAllLines(path);
+            File.WriteAllLines(path, lines.Skip(1).ToArray());
+        }
 
         public List<T> ReadFromFile<T>(string path)
         {

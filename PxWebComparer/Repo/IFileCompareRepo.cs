@@ -11,5 +11,6 @@ namespace PxWebComparer.Repo
   //      void SaveToFile<T>(T model, string path);
         //void SaveToFile(List<CompareResultModel> compareResultModel, string path);
         void SaveToFile<T>(List<T> compareResultModel, string path);
+        void DeleteFirstRowInFile(string path);
     }
 }

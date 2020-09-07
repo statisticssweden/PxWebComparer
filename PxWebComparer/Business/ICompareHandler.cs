@@ -20,6 +20,5 @@ namespace PxWebComparer.Business
         bool CompareArrayLists(ArrayList arrayList1, ArrayList arrayList2);
         List<CompareResultApiModel> CompareApi(IEnumerable<MenuItem> level3Items, string level2qString,
             List<CompareResultApiModel> compareResultModelList);
-
     }
 }

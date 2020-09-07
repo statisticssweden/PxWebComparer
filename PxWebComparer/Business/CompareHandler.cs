@@ -97,6 +97,12 @@ namespace PxWebComparer.Business
                                 _savedQueryService.SaveToFile(res2, query, outputFormat.ToString(),
                                     $"{resultFolder2}\\{query}\\");
 
+                                if(outputFormat == OutputFormat.html5_table)
+                                {
+                                    fileRepo.DeleteFirstRowInFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt");
+                                    fileRepo.DeleteFirstRowInFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+                                }
+
                                 result = CompareSavedQueryResults(
                                     $@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
                                     $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
