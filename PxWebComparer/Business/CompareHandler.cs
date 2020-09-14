@@ -44,80 +44,92 @@ namespace PxWebComparer.Business
             {
                 foreach (var query in queryList)
                 {
-                    var compareResultModel = new CompareResultModel {SavedQuery = query};
+                    var compareResultModel = new CompareResultModel { SavedQuery = query };
 
                     var outputFormats = Enum.GetValues(typeof(OutputFormat)).Cast<OutputFormat>();
 
-                    foreach (var outputFormat in outputFormats)
+                    // Check if you can run the saved query at all on reference site
+                    var res = _savedQueryService.GetService($"{serverAddress1}{query}");
+
+                    if (res == null)
                     {
-                        bool saveQuery1;
-                        bool saveQuery2;
-                        bool? result;
-
-                        if (outputFormat == OutputFormat.xlsx || outputFormat == OutputFormat.xlsx_doublecolumn)
+                        foreach (var outputFormat in outputFormats)
                         {
+                            compareResultModel.UpdateModel(outputFormat, null);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var outputFormat in outputFormats)
+                        {
+                            bool saveQuery1;
+                            bool saveQuery2;
+                            bool? result;
 
-                            saveQuery1 = _savedQueryService.GetAndSaveAsFile($"{serverAddress1}{query}.{outputFormat}",
-                                $"{query}_{outputFormat}",
-                                "xlsx", $"{resultFolder1}\\{query}\\");
-
-                            saveQuery2 = _savedQueryService.GetAndSaveAsFile($"{serverAddress1}{query}.{outputFormat}",
-                                $"{query}_{outputFormat}",
-                                "xlsx", $"{resultFolder2}\\{query}\\");
-
-                            Thread.Sleep(5000);
-
-                            if (saveQuery1 && saveQuery2)
+                            if (outputFormat == OutputFormat.xlsx || outputFormat == OutputFormat.xlsx_doublecolumn)
                             {
-                                var resultList1 =
-                                    _excelComparer.ReadExcelFile(
-                                        $@"{resultFolder1}\{query}\{query}_{outputFormat}.xlsx");
-                                var resultList2 =
-                                    _excelComparer.ReadExcelFile(
-                                        $@"{resultFolder2}\{query}\{query}_{outputFormat}.xlsx");
-                                result = CompareArrayLists(resultList1, resultList2);
+
+                                saveQuery1 = _savedQueryService.GetAndSaveAsFile($"{serverAddress1}{query}.{outputFormat}",
+                                    $"{query}_{outputFormat}",
+                                    "xlsx", $"{resultFolder1}\\{query}\\");
+
+                                saveQuery2 = _savedQueryService.GetAndSaveAsFile($"{serverAddress1}{query}.{outputFormat}",
+                                    $"{query}_{outputFormat}",
+                                    "xlsx", $"{resultFolder2}\\{query}\\");
+
+                                Thread.Sleep(100);
+
+                                if (saveQuery1 && saveQuery2)
+                                {
+                                    var resultList1 =
+                                        _excelComparer.ReadExcelFile(
+                                            $@"{resultFolder1}\{query}\{query}_{outputFormat}.xlsx");
+                                    var resultList2 =
+                                        _excelComparer.ReadExcelFile(
+                                            $@"{resultFolder2}\{query}\{query}_{outputFormat}.xlsx");
+                                    result = CompareArrayLists(resultList1, resultList2);
+                                }
+                                else
+                                {
+                                    result = null;
+                                }
                             }
                             else
                             {
-                                result = null;
-                            }
-                        }
-                        else
-                        {
-                            var res1 = _savedQueryService.GetService($"{serverAddress1}{query}.{outputFormat}");
+                                var res1 = _savedQueryService.GetService($"{serverAddress1}{query}.{outputFormat}");
 
-                            var res2 = _savedQueryService.GetService($"{serverAddress2}{query}.{outputFormat}");
+                                var res2 = _savedQueryService.GetService($"{serverAddress2}{query}.{outputFormat}");
 
-                            Thread.Sleep(5000);
+                                Thread.Sleep(100);
 
-                            if (res1 != null && res2 != null)
-                            {
-                                _savedQueryService.SaveToFile(res1, query, outputFormat.ToString(),
-                                    $"{resultFolder1}\\{query}\\");
-                                _savedQueryService.SaveToFile(res2, query, outputFormat.ToString(),
-                                    $"{resultFolder2}\\{query}\\");
-
-                                if(outputFormat == OutputFormat.html5_table)
+                                if (res1 != null && res2 != null)
                                 {
-                                    fileRepo.DeleteFirstRowInFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt");
-                                    fileRepo.DeleteFirstRowInFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+                                    _savedQueryService.SaveToFile(res1, query, outputFormat.ToString(),
+                                        $"{resultFolder1}\\{query}\\");
+                                    _savedQueryService.SaveToFile(res2, query, outputFormat.ToString(),
+                                        $"{resultFolder2}\\{query}\\");
+
+                                    if (outputFormat == OutputFormat.html5_table)
+                                    {
+                                        fileRepo.DeleteFirstRowInFile($@"{resultFolder1}\{query}\{query}_{outputFormat}.txt");
+                                        fileRepo.DeleteFirstRowInFile($@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+                                    }
+
+                                    result = CompareSavedQueryResults(
+                                        $@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
+                                        $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
+
+                                }
+                                else
+                                {
+                                    result = null;
                                 }
 
-                                result = CompareSavedQueryResults(
-                                    $@"{resultFolder1}\{query}\{query}_{outputFormat}.txt",
-                                    $@"{resultFolder2}\{query}\{query}_{outputFormat}.txt");
-
-                            }
-                            else
-                            {
-                                result = null;
                             }
 
+                            compareResultModel.UpdateModel(outputFormat, result);
                         }
-
-                        compareResultModel.UpdateModel(outputFormat, result);
                     }
-
                     compareResultModelList.Add(compareResultModel);
                 }
 
@@ -167,12 +179,12 @@ namespace PxWebComparer.Business
                         $@"{resultFolder2}\{savedQuery}\{savedQuery}_SavedQueryMeta.txt");
 
                     savedQueryMetaCompareResultModel.Add(new SavedQueryMetaCompareResultModel()
-                        {Id = savedQuery, Result = result});
+                    { Id = savedQuery, Result = result });
                 }
                 else
                 {
                     savedQueryMetaCompareResultModel.Add(new SavedQueryMetaCompareResultModel()
-                        {Id = savedQuery, Result = null});
+                    { Id = savedQuery, Result = null });
                 }
             }
 
@@ -194,7 +206,7 @@ namespace PxWebComparer.Business
 
 
             var directory = new DirectoryInfo(pxsqFolder1);
-            var masks = new[] {"*.pxsq"};
+            var masks = new[] { "*.pxsq" };
             var savedQueryIds = masks.SelectMany(directory.EnumerateFiles);
 
             fileRepo.DeleteAllFilesInFolder($"{_appSettingsHandler.ReadSetting("ResultFolder1")}/SavedQueryMeta/");
@@ -221,12 +233,12 @@ namespace PxWebComparer.Business
                         $@"{resultFolder1}\SavedQueryMeta\{sqId}\{sqId}_SavedQueryMeta.txt",
                         $@"{resultFolder2}\SavedQueryMeta\{sqId}\{sqId}_SavedQueryMeta.txt");
                     savedQueryMetaCompareResultModel.Add(new SavedQueryMetaCompareResultModel()
-                        {Id = sqId, Result = result});
+                    { Id = sqId, Result = result });
                 }
                 else
                 {
                     savedQueryMetaCompareResultModel.Add(new SavedQueryMetaCompareResultModel()
-                        {Id = sqId, Result = null});
+                    { Id = sqId, Result = null });
                 }
 
             }
@@ -234,7 +246,7 @@ namespace PxWebComparer.Business
             fileRepo.DeleteFile(compareResultFile);
             fileRepo.SaveToFile(savedQueryMetaCompareResultModel, compareResultFile);
         }
-        
+
         //Unittest to this one
         public string SavedQueryString(SavedQuery sq)
         {
@@ -395,7 +407,7 @@ namespace PxWebComparer.Business
 
             menuItems = GetReduceList<MenuItem>(menuItems.ToList());
 
-           // menuItems = menuItems.Where(x => x.Id == "UF");
+            // menuItems = menuItems.Where(x => x.Id == "UF");
 
             foreach (var menuItem in menuItems)
             {
@@ -423,7 +435,7 @@ namespace PxWebComparer.Business
                     foreach (var level2Item in level2Items)
                     {
                         var level2qString = level1qString + $"/{level2Item.Id}";
-                       
+
                         var level2Result = _savedQueryService.GetService(serverAddress1 + level2qString);
 
                         try
@@ -442,7 +454,7 @@ namespace PxWebComparer.Business
 
             fileRepo.DeleteFile(compareResultFile);
             fileRepo.SaveToFile(compareResultModelList, compareResultFile);
-           
+
             var resultFile = fileRepo.ReadFromFile<CompareResultApiModel>(compareResultFile);
         }
 
@@ -468,7 +480,7 @@ namespace PxWebComparer.Business
                 {
                     metaTableResult = JsonConvert.DeserializeObject<MetaTable>(queryResult1);
 
-                    var compareResultModel = new CompareResultApiModel() {TableId= level3Item.Id};
+                    var compareResultModel = new CompareResultApiModel() { TableId = level3Item.Id };
 
                     //var outputFormats = Enum.GetValues(typeof(OutputFormatApi)).Cast<OutputFormatApi>();
 
@@ -479,9 +491,9 @@ namespace PxWebComparer.Business
 
                     foreach (var outputFormat in outputFormats)
                     {
-                        var tableQuery = MapToTableQuery(metaTableResult, outputFormat.ToString().Replace("_","-"));
+                        var tableQuery = MapToTableQuery(metaTableResult, outputFormat.ToString().Replace("_", "-"));
 
-                          bool? result;
+                        bool? result;
 
 
                         if (outputFormat == OutputFormatApi.xlsx)
@@ -492,7 +504,7 @@ namespace PxWebComparer.Business
                             res1 = _savedQueryService.PostAndSaveAsFile($"{serverAddress1}{lev3qString}",
                                 $"{level3Item.Id}_{outputFormat}",
                                 "xlsx", $"{resultFolder1}\\{level3Item.Id}\\"
-                                ,tableQuery);
+                                , tableQuery);
 
                             res2 = _savedQueryService.PostAndSaveAsFile($"{serverAddress1}{lev3qString}",
                                 $"{level3Item.Id}_{outputFormat}",
@@ -519,7 +531,7 @@ namespace PxWebComparer.Business
                         else
                         {
                             var res1 = _savedQueryService.PostService($"{serverAddress1 + lev3qString}", tableQuery);
-                            
+
                             var res2 = _savedQueryService.PostService($"{serverAddress2 + lev3qString}", tableQuery);
 
                             Thread.Sleep(5000);
@@ -540,8 +552,8 @@ namespace PxWebComparer.Business
                                 result = null;
                             }
 
-                            
-                       }
+
+                        }
                         compareResultModel.UpdateModel(outputFormat, result);
                     }
                     compareResultModelList.Add(compareResultModel);
@@ -549,7 +561,7 @@ namespace PxWebComparer.Business
             }
             return compareResultModelList;
         }
-        
+
         public TableQuery MapToTableQuery(MetaTable metaTable, string format)
         {
             var tableQuery = new TableQuery();
