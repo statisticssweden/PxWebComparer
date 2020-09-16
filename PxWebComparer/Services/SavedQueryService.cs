@@ -15,11 +15,11 @@ namespace PxWebComparer.Services
             string resultString = string.Empty;
 
             {
-                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 try
                 {
 
-                    using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             using (Stream stream = response.GetResponseStream())
@@ -75,96 +75,113 @@ namespace PxWebComparer.Services
             }
             return resultString;
         }
-        
+
         public bool PostAndSaveAsFile(string url, string fileName, string savedQueryFormat, string path, TableQuery tableQuery)
         {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            request.ContentType = "application/json";
-            request.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            try
             {
-                string json = JsonConvert.SerializeObject(tableQuery);
-                streamWriter.Write(json);
-            }
+                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                if (response.StatusCode == HttpStatusCode.OK)
+                request.ContentType = "application/json";
+                request.Method = "POST";
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    using (Stream fs = File.Create($"{path}/{fileName}.{savedQueryFormat}"))
+                    string json = JsonConvert.SerializeObject(tableQuery);
+                    streamWriter.Write(json);
+                }
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        response.GetResponseStream().CopyTo(fs);
+                        using (Stream fs = File.Create($"{path}/{fileName}.{savedQueryFormat}"))
+                        {
+                            response.GetResponseStream().CopyTo(fs);
+                        }
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
-                else
-                {
-                    return false;
-                }
+                return true;
+
             }
-            return true;
+            catch (System.Exception)
+            {
+
+                return false;
+            }
         }
 
 
 
         public bool PostAndSaveAsFileService(string url, TableQuery tableQuery, string fileName)
-          { 
+        {
             var stringPayload = JsonConvert.SerializeObject(tableQuery);
             var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
 
             using (var httpClient = new HttpClient())
             {
-                  var httpResponse = httpClient.PostAsync(url, httpContent);
+                var httpResponse = httpClient.PostAsync(url, httpContent);
 
-                  if (httpResponse.Result != null)
-                  {
-                      using (Stream fs = File.Create($"{fileName}"))
-                      {
-                        httpResponse.Result.Content.CopyToAsync(fs); 
-                      }
-                  }
-                  else
-                  {
-                      return false;
-                  }
-                  return true;
-            }
-
-          }
-        
-          public bool GetAndSaveAsFile(string url, string fileName, string savedQueryFormat, string path)
-        {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
-            {
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (httpResponse.Result != null)
                 {
-                    using (Stream fs = File.Create($"{path}/{fileName}.{savedQueryFormat}"))
+                    using (Stream fs = File.Create($"{fileName}"))
                     {
-                        response.GetResponseStream().CopyTo(fs);
+                        httpResponse.Result.Content.CopyToAsync(fs);
                     }
                 }
                 else
                 {
                     return false;
                 }
+                return true;
             }
-            return true;
+
+        }
+
+        public bool GetAndSaveAsFile(string url, string fileName, string savedQueryFormat, string path)
+        {
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        using (Stream fs = File.Create($"{path}/{fileName}.{savedQueryFormat}"))
+                        {
+                            response.GetResponseStream().CopyTo(fs);
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+
         }
 
         public void SaveToFile(string content, string fileName, string savedQueryFormat, string path)
         {
             var file = new FileInfo($@"{path}\{fileName}.{savedQueryFormat}");
             file.Directory.Create();
-            
+
             File.WriteAllText(
                 Path.Combine(path, $"{fileName}_{savedQueryFormat}.txt"),
                 content,
                 Encoding.UTF8);
         }
 
-    }   
+    }
 }
